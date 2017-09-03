@@ -1,0 +1,106 @@
+# Update the hostname to the local development environment hostname.
+vagrant_hostname: nvision.dev
+vagrant_machine_name: nvision
+
+# Set the IP address so it doesn't conflict with other Drupal VM instances.
+vagrant_ip: 192.168.25.63
+
+# Set vagrant box memory limit
+vagrant_memory: 2048
+
+# Use Ubuntu 14.04 LTS to more closely match Acquia Cloud environment.
+vagrant_box: geerlingguy/ubuntu1404
+
+# Set drupal_site_name to the project's human-readable name.
+drupal_site_name: "NVision Athletics"
+
+# Provide the path to the project root to Vagrant.
+vagrant_synced_folders:
+  # Set the local_path for the first synced folder to `.`.
+  - local_path: .
+    # Set the destination to the Acquia Cloud subscription machine name.
+    destination: /var/www/nvision
+    type: nfs
+
+drupal_build_makefile: false
+drupal_build_composer_project: false
+
+# Toggling this to `true` would invoke `composer install` with the
+# projects own `composer.json` successfully.
+drupal_build_composer: false
+drupal_composer_path: false
+drupal_composer_install_dir: "/var/www/nvision"
+drupal_core_path: "{{ drupal_composer_install_dir }}/docroot"
+
+ssh_home: "/var/www/nvision"
+
+drupal_domain: "{{ vagrant_hostname }}"
+
+drupal_db_user: drupal
+drupal_db_password: drupal
+drupal_db_name: drupal
+
+# Set this to 'false' if you don't need to install drupal (using the drupal_*
+# settings below), but instead copy down a database (e.g. using drush sql-sync).
+drupal_install_site: false
+
+# Drupal VM automatically creates a drush alias file in your ~/.drush folder if
+# this variable is 'true'.
+configure_drush_aliases: true
+
+drush_version: "8.1.10"
+
+installed_extras:
+  - adminer
+  - drush
+  - mailhog
+  - memcached
+  - selenium
+  - upload-progress
+  - varnish
+  - xdebug
+
+# Use PHP 5.6.
+php_version: "5.6"
+php_packages_extra:
+  - "php{{ php_version }}-bz2"
+  - "php{{ php_version }}-imagick"
+  - "php{{ php_version }}-solr"
+  - "php{{ php_version }}-oauth"
+  - imagemagick
+
+php_sendmail_path: "/opt/mailhog/mhsendmail"
+
+# XDebug configuration.
+# Change this value to 1 in order to enable xdebug by default.
+php_xdebug_default_enable: 1
+php_xdebug_coverage_enable: 1
+# Change this value to 1 in order to enable xdebug on the cli.
+php_xdebug_cli_enable: 1
+php_xdebug_remote_enable: 1
+php_xdebug_remote_connect_back: 1
+# Use PHPSTORM for PHPStorm, sublime.xdebug for Sublime Text.
+php_xdebug_idekey: PHPSTORM
+php_xdebug_max_nesting_level: 256
+php_xdebug_remote_port: "9000"
+
+# MySQL Configuration.
+mysql_root_password: root
+mysql_slow_query_log_enabled: true
+mysql_slow_query_time: 2
+mysql_wait_timeout: 300
+adminer_install_filename: index.php
+
+# Varnish Configuration (if enabled above).
+varnish_listen_port: "81"
+varnish_default_vcl_template_path: templates/drupalvm.vcl.j2
+varnish_default_backend_host: "127.0.0.1"
+varnish_default_backend_port: "80"
+
+# Selenium configuration.
+selenium_version: 2.53.0
+
+# Other configuration.
+dashboard_install_dir: /var/www/dashboard
+known_hosts_path: ~/.ssh/known_hosts
+ssh_home: "{{ drupal_core_path }}"

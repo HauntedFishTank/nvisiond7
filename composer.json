@@ -1,0 +1,23 @@
+{
+    "name": "gideoncresswell/nvision",
+    "description": "NVision Athletics",
+    "type": "project",
+    "minimum-stability": "dev",
+    "license": "proprietary",
+    "require-dev": {
+        "geerlingguy/drupal-vm": "dev-master"
+    },
+    "extra": {
+        "installer-paths": {
+            "docroot": ["type:drupal-core"],
+            "docroot/sites/all/libraries/{$name}": ["type:drupal-library"],
+            "docroot/sites/all/modules/contrib/{$name}": ["type:drupal-module"],
+            "docroot/profiles/contrib/{$name}": ["type:drupal-profile"],
+            "docroot/sites/all/themes/{$name}": ["type:drupal-theme"],
+            "docroot/sites/all/modules/custom/{$name}": ["type:drupal-custom-module"]
+        }
+    },
+    "require": {
+        "behat/behat": "~3.3"
+    }
+}
