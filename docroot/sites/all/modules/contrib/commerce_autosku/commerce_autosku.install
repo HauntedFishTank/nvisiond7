@@ -8,6 +8,16 @@
 function commerce_autosku_schema() {
   $schema['commerce_autosku_patterns'] = array(
   'description' => 'TODO: please describe this table!',
+  'export' => array(
+    'key' => 'product_type',
+    'key name' => 'Product Type',
+    'api' => array(
+      'owner' => 'commerce_autosku',
+      'api' => 'autosku_pattern',
+      'minimum_version' => 1,
+      'current_version' => 1,
+    )
+  ),
   'fields' => array(
     'product_type' => array(
       'description' => 'Product type identifier.',
@@ -58,4 +68,14 @@ function commerce_autosku_update_7102(&$sandbox) {
     'not null' => TRUE,
   );
   db_change_field('commerce_autosku_patterns', 'product_type', 'product_type', $spec);
+}
+
+function commerce_autosku_update_7103() {
+  $spec = array(
+    'description' => 'Token replacement pattern.',
+    'type' => 'text',
+    'size' => 'big',
+    'not null' => TRUE,
+  );
+  db_change_field('commerce_autosku_patterns', 'pattern', 'pattern', $spec);
 }

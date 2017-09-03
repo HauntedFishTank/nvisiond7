@@ -12,7 +12,7 @@ define('COMMERCE_AUTOSKU_REPLACEMENT', '');
  * Implements hook_form_FORM_ID_alter().
  */
 function commerce_autosku_form_commerce_product_ui_product_type_form_alter(&$form, &$form_state) {
-  if (isset($form_state['product_type']['autosku']['pattern'])) {
+  if (!empty($form_state['product_type']['autosku']['pattern'])) {
     $pattern = $form_state['product_type']['autosku']['pattern'];
     $advanced = $form_state['product_type']['autosku']['advanced'];
   }
@@ -42,6 +42,7 @@ function commerce_autosku_form_commerce_product_ui_product_type_form_alter(&$for
     '#title' => t('SKU Pattern'),
     '#default_value' => $pattern,
     '#maxlength' => 255,
+    '#size' => 128,
     '#states' => array(
       'required' => array(
         ':input[name="product_type[autosku_status]"]' => array('checked' => TRUE),
@@ -97,7 +98,7 @@ function commerce_autosku_form_commerce_product_ui_product_type_form_alter(&$for
     '#type' => 'select',
     '#title' => t('SKU Case'),
     '#options' => array(
-      0 => t('Do not change'),
+      'original' => t('Do not change'),
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
@@ -148,6 +149,29 @@ function commerce_autosku_form_commerce_product_product_form_alter(&$form, &$for
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function commerce_autosku_form_commerce_bpc_create_bulk_form_alter(&$form, &$form_state) {
+  if (!isset($form_state['commerce_product'])) {
+    $form_state['commerce_product'] = $form['static_values']['#entity'];
+  }
+  if ($settings = commerce_autosku_get_settings($form_state['commerce_product'])) {
+    $form['product']['sku_fragment']['#required'] = FALSE;
+    $form['product']['sku_fragment']['#disabled'] = TRUE;
+    if ($settings['advanced']['hide_sku']) {
+      $form['product']['sku_fragment']['#access'] = FALSE;
+    }
+    else {
+      $form['product']['sku_fragment']['#description'] = t('SKU will be automatically generated.');
+    }
+
+    if (isset($form['product']['sku_fragment']['#element_validate'])) {
+      unset($form['product']['sku_fragment']['#element_validate']);
+    }
+  }
+}
+
+/**
  * Generate a random, temporary SKU to use when saving a new node.
  */
 function _commerce_autosku_get_temporary_sku() {
@@ -187,7 +211,7 @@ function _commerce_autosku_default_settings() {
   return array(
     'update_existing' => TRUE,
     'hide_sku' => TRUE,
-    'case' => 0,
+    'case' => 'original',
   );
 }
 
@@ -199,4 +223,68 @@ function commerce_autosku_cleanstring($string) {
     $string = transliteration_get($string);
   }
   return preg_replace(COMMERCE_AUTOSKU_DISALLOWED, COMMERCE_AUTOSKU_REPLACEMENT, $string);
+}
+
+/**
+ * Implements hook_features_pipe_COMPONENT_alter().
+ *
+ * Add the autosku settings to the export when the product type is selected.
+ */
+function commerce_autosku_features_pipe_commerce_product_type_alter(&$pipe, $data, $export) {
+  if($export['component'] == 'commerce_product_type') {
+    foreach($data as $type) {
+      $pipe['commerce_autosku_patterns'][] = $type;
+    }
+  }
+}
+
+/**
+ * Generates a SKU for the product passed in using the given pattern.
+ *
+ * @param $product
+ *   The product whose SKU should be generated.
+ * @param $pattern
+ *   The pattern to use to determine the product SKU.
+ * @param $case
+ *   String indicating the casing to use for letters in the SKU, one of:
+ *   - 'original': do not change the casing used in any of the tokens.
+ *   - 'uppercase': convert the SKU to all upper case letters.
+ *   - 'lowercase': convert the SKU to all lower case letters.
+ *
+ * @return
+ *   A string containing a unique SKU for the product pass in using the given
+ *   pattern with a numeric suffix in the event of a pre-existing matching SKU.
+ */
+function commerce_autosku_generate_sku($product, $pattern, $case = 'original') {
+  // Create the new SKU using token replacement, clean out illegitimate values,
+  // and trim it to the maximum SKU length - 255 characters.
+  $sku = token_replace($pattern, array('commerce-product' => $product), array('clear' => TRUE));
+  $sku = commerce_autosku_cleanstring($sku);
+  $sku = drupal_substr($sku, 0, 255);
+
+  // Adjust the casing as specified.
+  switch ($case) {
+    case 'uppercase':
+      $sku = drupal_strtoupper($sku);
+      break;
+    case 'lowercase':
+      $sku = drupal_strtolower($sku);
+      break;
+  }
+
+  // Check to ensure the current SKU is unique...
+  if (!commerce_product_validate_sku_unique($sku, $product->product_id)) {
+    // If not, retain the originally generated SKU and begin to append numerals
+    // to it in search of a unique SKU.
+    $original_sku = $sku;
+    $i = 0;
+
+    do {
+      $sku = drupal_substr($original_sku, 0, (255 - drupal_strlen(COMMERCE_AUTOSKU_REPLACEMENT . $i)));
+      $sku = commerce_autosku_cleanstring($sku . COMMERCE_AUTOSKU_REPLACEMENT . $i);
+      $i++;
+    } while (!commerce_product_validate_sku_unique($sku, $product->product_id));
+  }
+
+  return $sku;
 }

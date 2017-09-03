@@ -22,9 +22,7 @@ class CommerceAutoSkuTest extends CommerceBaseTestCase {
    * Implements setUp().
    */
   function setUp() {
-    $modules = parent::setUpHelper('all');
-    $modules[] = 'commerce_autosku';
-    $modules[] = 'token';
+    $modules = array('commerce_product_ui', 'commerce_autosku');
     parent::setUp($modules);
 
     // User creation for different operations.
@@ -32,6 +30,13 @@ class CommerceAutoSkuTest extends CommerceBaseTestCase {
 
     // Login with admin user.
     $this->drupalLogin($this->store_admin);
+  }
+
+  public function permissionBuilder($sets) {
+    $perms = parent::permissionBuilder($sets);
+    // Filter perms by enabled modules:
+    $possible_perms = array_keys(module_invoke_all('permission'));
+    return array_intersect($perms, $possible_perms);
   }
 
   /**
@@ -66,6 +71,32 @@ class CommerceAutoSkuTest extends CommerceBaseTestCase {
     $this->drupalPost('admin/commerce/products/add/product', $edit, 'Save product');
     $product = commerce_product_load(3);
     $this->assertEqual($product->sku, '3', t('Product ID token replaced.'));
+
+    //Test that empty/nonexistent tokens are not printed in the generated pattern.
+    $title = $this->randomName();
+    $this->productTypeSubmit(array('product_type[autosku][pattern]' => '[commerce-product:title][commerce-product:nonexistent-token]'));
+    $edit = array('title' => $title, 'commerce_price[' . LANGUAGE_NONE . '][0][amount]' => 500);
+    $this->drupalPost('admin/commerce/products/add/product', $edit, 'Save product');
+    $product = commerce_product_load(4);
+    $this->assertEqual($product->sku, $title);
+
+    // Test that a pattern that resolves to more than 255 characters is trimmed.
+    //Test that empty/nonexistent tokens are not printed in the generated pattern.
+    $title = $this->randomName(100);
+    $this->productTypeSubmit(array('product_type[autosku][pattern]' => '[commerce-product:title][commerce-product:title][commerce-product:title]'));
+    $edit = array('title' => $title, 'commerce_price[' . LANGUAGE_NONE . '][0][amount]' => 500);
+    $this->drupalPost('admin/commerce/products/add/product', $edit, 'Save product');
+    $product = commerce_product_load(5);
+    $this->assertEqual(drupal_strlen($product->sku), 255);
+    $this->assertEqual($product->sku, drupal_substr($title . $title . $title, 0, 255));
+
+    // Test that when trimming SKU's, we trim from the original sku rather
+    // than the number-incremented version.
+    $edit = array('title' => $title, 'commerce_price[' . LANGUAGE_NONE . '][0][amount]' => 500);
+    $this->drupalPost('admin/commerce/products/add/product', $edit, 'Save product');
+    $product = commerce_product_load(6);
+    $this->assertEqual(drupal_strlen($product->sku), 255);
+    $this->assertEqual($product->sku, drupal_substr($title . $title . $title, 0, 254) . 0);
   }
 
   public function testCommerceAutoSKUUpdates() {
@@ -80,7 +111,7 @@ class CommerceAutoSkuTest extends CommerceBaseTestCase {
     //Create a new product and check that the product_id token is correctly replaced:
     $product_edit = array('title' => 'SimpleTest', 'commerce_price[' . LANGUAGE_NONE . '][0][amount]' => 500);
     $this->drupalPost('admin/commerce/products/add/product', $product_edit, 'Save product');
-    $product = reset(commerce_product_load_multiple(array(1), array(), TRUE));
+    $product = $this->commerceProductLoadWithReset(1);
     $this->assertEqual('1', $product->sku, t('Generated SKU from Product ID'));
 
     //Now create a new product whose SKU we will change:
@@ -90,12 +121,12 @@ class CommerceAutoSkuTest extends CommerceBaseTestCase {
 
     $product_edit = array('title' => $original_title, 'commerce_price[' . LANGUAGE_NONE . '][0][amount]' => 500);
     $this->drupalPost('admin/commerce/products/add/product', $product_edit, 'Save product');
-    $product = reset(commerce_product_load_multiple(array(2), array(), TRUE));
+    $product = $this->commerceProductLoadWithReset(2);
     $this->assertIdentical($original_title, $product->sku, t('SKU was initially set to product title.'));
 
     $product_edit['title'] = 'SimpleTest_2';
     $this->drupalPost('admin/commerce/products/2/edit', $product_edit, 'Save product');
-    $product = reset(commerce_product_load_multiple(array(2), array(), TRUE));
+    $product = $this->commerceProductLoadWithReset(2);
     $this->assertIdentical('SimpleTest_2', $product->title, t('Changed Title.'));
     $this->assertIdentical($original_title, $product->sku, t('SKU was unchanged.'));
   }
@@ -134,15 +165,16 @@ class CommerceAutoSkuTest extends CommerceBaseTestCase {
     //Onto the uppercase/lowercase tests.
     $product_edit = array('title' => 'SimpleTest', 'commerce_price[' . LANGUAGE_NONE . '][0][amount]' => 500);
     $this->drupalPost('admin/commerce/products/add', $product_edit, 'Save product');
-    $product = reset(commerce_product_load_multiple(array(1), array(), TRUE));
+    $product = $this->commerceProductLoadWithReset(1);
     $this->assertIdentical('SIMPLETEST', $product->sku, t('SKU was uppercased.'));
 
     $edit['product_type[autosku][advanced][case]'] = 'lowercase';
     $this->productTypeSubmit($edit);
 
     $this->drupalPost('admin/commerce/products/1/edit', $product_edit, 'Save product');
-    $product = reset(commerce_product_load_multiple(array(1), array(), TRUE));
+    $product = $this->commerceProductLoadWithReset(1);
     $this->assertIdentical('simpletest', $product->sku, t('SKU was lowercased.'));
+
   }
 
   /**
@@ -164,6 +196,15 @@ class CommerceAutoSkuTest extends CommerceBaseTestCase {
 
   public function productTypeSubmit($edit, $product_type = 'product') {
     $this->drupalPost("admin/commerce/products/types/$product_type/edit", $edit, 'Save product type');
+  }
+
+  /**
+   * Helper function to load a Commerce product while ensuring the
+   * static cache is bypassed.
+   */
+  protected function commerceProductLoadWithReset($product_id) {
+    $products = commerce_product_load_multiple(array($product_id), array(), TRUE);
+    return reset($products);
   }
 
 }
