@@ -1,0 +1,74 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function nvision_core_block_info() {
+  return array(
+    'hero_carousel' => array(
+      'info'  => t('Hero image carousel'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function nvision_core_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'hero_carousel':
+      $block['subject'] = t('Hero image carousel');
+      $block['content'] = array(
+        '#theme' => 'hero_carousel_block',
+      );
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function nvision_core_theme($existing, $type, $theme, $path) {
+  return array(
+    'hero_carousel_block' => array(
+      'variables' => array(),
+      'template'  => 'templates/hero-carousel-block',
+    ),
+  );
+}
+
+/**
+ * Template preprocess handler for 'hero_carousel_block' theme.
+ */
+function template_process_hero_carousel_block(&$variables) {
+  $view = views_get_view_result('homepage_slideshow', 'carousel');
+  // Add an 'active' class to the first result
+  $view[0]->status = 'active';
+
+  $hero_images = array();
+
+  foreach ($view as $item) {
+    $item_vars = array();
+    $img = $item->field_field_image[0]['raw'];
+
+    $item_vars['uri'] = $img['uri'];
+    $item_vars['alt'] = $img['alt'];
+    $item_vars['title'] = $img['title'];
+
+    // Theme the HTML and add rendered HTML to object using variables above.
+    $item->html = render($item->field_field_image[0]['rendered']);
+
+    $hero_images[] = $item;
+  }
+
+  $variables['hero_images'] = $hero_images;
+}

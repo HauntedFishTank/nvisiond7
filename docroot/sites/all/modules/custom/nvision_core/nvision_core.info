@@ -1,0 +1,7 @@
+name = Nvision Athletics Core Module
+description = Custom and core overrides.
+core = 7.x
+package = Nvision
+
+dependencies[] = picture
+dependencies[] = views

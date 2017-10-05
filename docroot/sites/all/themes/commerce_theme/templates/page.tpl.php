@@ -247,7 +247,6 @@
       <footer<?php print $footer_attributes; ?>>
         <?php print render($page['footer']); ?>
         <?php print $attribution; ?>
-        <div class="copyright"><p>Drupal DEMO Store. Copyright ©&nbsp;2015 Themes by <a href="http://adcisolutions.com/" title="drupal development">ADCI solutions</a>. All Rights Reserved.</p></div>
       </footer>
     <?php endif; ?>
 

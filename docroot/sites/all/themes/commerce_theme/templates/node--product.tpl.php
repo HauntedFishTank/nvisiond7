@@ -85,34 +85,35 @@
     hide($content['comments']);
     hide($content['links']);
     ?>
-    <div class="big-product-image"></div>
-    <?php if (isset($gallery)) :?>
-      <?php print $gallery;?>
-    <?php endif; ?>
     <?php print render($title_prefix); ?>
-    <?php /* if (!$page): */ ?>
-      <h2<?php print $title_attributes; ?>>
-        <?php print $title; ?>
-      </h2>
-    <?php /* endif; */ ?>
-  <?php print render($title_suffix); ?>
+    <?php print render($title_suffix); ?>
 
-  <?php if ($display_submitted): ?>
-    <div class="meta submitted">
-    <?php print $user_picture; ?>
-    <?php print $submitted; ?>
-    </div>
-  <?php endif; ?>
-    <?php print render($content); ?>
+    <?php if ($display_submitted): ?>
+      <div class="meta submitted">
+        <?php print $user_picture; ?>
+        <?php print $submitted; ?>
+      </div>
+    <?php endif; ?>
+    <?php if (isset($content['product:field_view'])) {
+      print render($content['product:field_view']);
+    }?>
+    <?php //if (!$page): ?>
+    <h2<?php print $title_attributes; ?>>
+      <?php print $title; ?>
+    </h2>
+    <?php //endif; ?>
+    <?php
+    unset($content['product:field_view']);
+    print render($content);?>
   </div>
 
   <?php
-    if ($teaser || !empty($content['comments']['comment_form'])) {
-      unset($content['links']['comment']['#links']['comment-add']);
-    }
-    $links = render($content['links']);
-    if ($links):
-  ?>
+  if ($teaser || !empty($content['comments']['comment_form'])) {
+    unset($content['links']['comment']['#links']['comment-add']);
+  }
+  $links = render($content['links']);
+  if ($links):
+    ?>
     <div class="link-wrapper">
       <?php print $links; ?>
     </div>

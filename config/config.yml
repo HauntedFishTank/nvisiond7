@@ -20,7 +20,7 @@ vagrant_synced_folders:
   - local_path: .
     # Set the destination to the Acquia Cloud subscription machine name.
     destination: /var/www/nvision
-    type: nfs
+    type: rsync
 
 drupal_build_makefile: false
 drupal_build_composer_project: false

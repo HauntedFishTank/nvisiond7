@@ -1,0 +1,84 @@
+name = 'Nvision Bootstrap'
+description = Uses the Bootstrap Framework Less source files and must be compiled (not for beginners).
+core = 7.x
+base theme = bootstrap
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Regions
+;;;;;;;;;;;;;;;;;;;;;
+
+regions[navigation]     = 'Navigation'
+regions[header]         = 'Top bar'
+regions[highlighted]    = 'Highlighted'
+regions[region_slider]  = 'Slider'
+regions[help]           = 'Help'
+regions[content]        = 'Content'
+regions[sidebar_first]  = 'Primary sidebar'
+regions[sidebar_second] = 'Secondary sidebar'
+regions[footer]         = 'Footer'
+regions[page_top]       = 'Page top'
+regions[page_bottom]    = 'Page bottom'
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Stylesheets
+;;;;;;;;;;;;;;;;;;;;;
+
+stylesheets[all][] = css/style.css
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Scripts
+;;;;;;;;;;;;;;;;;;;;;
+
+scripts[] = 'bootstrap/js/affix.js'
+scripts[] = 'bootstrap/js/alert.js'
+scripts[] = 'bootstrap/js/button.js'
+scripts[] = 'bootstrap/js/carousel.js'
+scripts[] = 'bootstrap/js/collapse.js'
+scripts[] = 'bootstrap/js/dropdown.js'
+scripts[] = 'bootstrap/js/modal.js'
+scripts[] = 'bootstrap/js/tooltip.js'
+scripts[] = 'bootstrap/js/popover.js'
+scripts[] = 'bootstrap/js/scrollspy.js'
+scripts[] = 'bootstrap/js/tab.js'
+scripts[] = 'bootstrap/js/transition.js'
+
+; Disable the CDN provider so compiled source files can be used.
+settings[bootstrap_cdn] = ''
+
+; Fonts
+fonts[google_fonts_api][] = "Muli&subset=latin#200"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#200"
+fonts[google_fonts_api][] = "Muli&subset=latin#200italic"
+fonts[google_fonts_api][] = "Muli&subset=latin#300"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#300"
+fonts[google_fonts_api][] = "Muli&subset=latin#300italic"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#300italic"
+fonts[google_fonts_api][] = "Muli&subset=latin#600"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#600"
+fonts[google_fonts_api][] = "Muli&subset=latin#600italic"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#600italic"
+fonts[google_fonts_api][] = "Muli&subset=latin#700"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#700"
+fonts[google_fonts_api][] = "Muli&subset=latin#700italic"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#700italic"
+fonts[google_fonts_api][] = "Muli&subset=latin#800"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#800"
+fonts[google_fonts_api][] = "Muli&subset=latin#800italic"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#800italic"
+fonts[google_fonts_api][] = "Muli&subset=latin#900"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#900"
+fonts[google_fonts_api][] = "Muli&subset=latin#900italic"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#900italic"
+fonts[google_fonts_api][] = "Muli&subset=latin#italic"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#italic"
+fonts[google_fonts_api][] = "Muli&subset=latin#regular"
+fonts[google_fonts_api][] = "Muli&subset=latin-ext#regular"
+fonts[google_fonts_api][] = "Open Sans Condensed&subset=latin#300"
+fonts[google_fonts_api][] = "Open Sans Condensed&subset=latin-ext#300"
+fonts[google_fonts_api][] = "Open Sans Condensed&subset=latin#300italic"
+fonts[google_fonts_api][] = "Open Sans Condensed&subset=latin-ext#300italic"
+fonts[google_fonts_api][] = "Open Sans Condensed&subset=latin#700"
+fonts[google_fonts_api][] = "Open Sans Condensed&subset=latin-ext#700"
