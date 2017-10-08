@@ -1,0 +1,11 @@
+name = Commerce European Union Countries
+description = List of European Union Countries, as of 2007
+core = 7.x
+package = Features
+version = 7.x-1.0
+project = commerce_european_union_countries
+dependencies[] = commerce_order
+dependencies[] = entity
+dependencies[] = rules
+features[features_api][] = api:1
+features[rules_config][] = rules_commerce_european_union_countries
