@@ -7616,8 +7616,7 @@ a.icon-after .glyphicon {
   margin-left: -40px;
   text-transform: uppercase;
 }
-.node-type-product .main-container,
-.node-type-page .main-container {
+.main-container {
   margin-top: 40px;
 }
 .node-type-product .page-header,
