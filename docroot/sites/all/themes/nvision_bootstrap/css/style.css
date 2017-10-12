@@ -7620,27 +7620,57 @@ a.icon-after .glyphicon {
   margin-top: 40px;
 }
 .node-type-product .page-header,
-.node-type-page .page-header {
+.node-type-page .page-header,
+.node-product .page-header {
   text-transform: uppercase;
   font-weight: 300;
   margin-bottom: 30px;
   border-bottom: 4px solid #eeeeee;
 }
+.node-type-product .product-teaser-title,
+.node-type-page .product-teaser-title,
+.node-product .product-teaser-title,
+.node-type-product .product-teaser-price,
+.node-type-page .product-teaser-price,
+.node-product .product-teaser-price {
+  text-transform: uppercase;
+  font-weight: 300;
+  text-align: center;
+  padding: 0 20px;
+}
+.node-type-product .product-teaser-price,
+.node-type-page .product-teaser-price,
+.node-product .product-teaser-price {
+  font-weight: 600;
+  font-size: 18px;
+}
 .node-type-product .main-image img,
 .node-type-page .main-image img,
+.node-product .main-image img,
 .node-type-product .thumb-images img,
-.node-type-page .thumb-images img {
+.node-type-page .thumb-images img,
+.node-product .thumb-images img {
   border: 1px solid #eeeeee;
 }
 .node-type-product .easyzoom--adjacent .easyzoom-flyout,
-.node-type-page .easyzoom--adjacent .easyzoom-flyout {
+.node-type-page .easyzoom--adjacent .easyzoom-flyout,
+.node-product .easyzoom--adjacent .easyzoom-flyout {
   background: red;
   margin-left: 30px;
 }
 .node-type-product .easyzoom-thumbnails,
-.node-type-page .easyzoom-thumbnails {
+.node-type-page .easyzoom-thumbnails,
+.node-product .easyzoom-thumbnails {
   margin-bottom: 20px;
 }
 .block + .block-webform {
   margin-top: 20px;
+}
+#block-views-products-block .product-teaser {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+#block-views-products-block .product-teaser:hover {
+  box-shadow: inset 0px 0px 0px 1px #333333;
 }

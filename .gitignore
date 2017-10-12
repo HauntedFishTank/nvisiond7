@@ -3,6 +3,6 @@ docroot/files
 docroot/sites/*/files
 docroot/sites/*/private
 docroot/sites/default/settings.local.php
-
+tmp
 vendor
 *.sql

@@ -80,49 +80,59 @@
  */
 ?>
 <article id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-  <?php if ((!$page && !empty($title)) || !empty($title_prefix) || !empty($title_suffix) || $display_submitted): ?>
-    <header>
-      <?php print render($title_prefix); ?>
-      <?php if (!$page && !empty($title)): ?>
-        <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
-      <?php endif; ?>
-      <?php print render($title_suffix); ?>
-    </header>
-  <?php endif; ?>
+  <?php if ($page): ?>
+    <?php if ((!$page && !empty($title)) || !empty($title_prefix) || !empty($title_suffix) || $display_submitted): ?>
+      <header>
+        <?php print render($title_prefix); ?>
+        <?php if (!$page && !empty($title)): ?>
+          <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
+        <?php endif; ?>
+        <?php print render($title_suffix); ?>
+      </header>
+    <?php endif; ?>
 
-  <div class="row">
-    <div class="col-sm-6">
-      <div class="main-image">
-        <?php print render($content['field_product_image'][0]); ?>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="main-image">
+          <?php print render($content['field_product_image'][0]); ?>
+        </div>
+        <?php
+        // Hide comments, tags, and links now so that we can render them later.
+        hide($content['comments']);
+        hide($content['links']);
+        hide($content['field_tags']);
+        ?>
       </div>
-  <?php
-  // Hide comments, tags, and links now so that we can render them later.
-  hide($content['comments']);
-  hide($content['links']);
-  hide($content['field_tags']);
-  ?>
-    </div>
-    <div class="col-sm-1">
-      <div class="thumb-images">
-        <?php for ($i = 1; $i <= $num_images; $i++): ?>
-          <?php print render($content['field_product_image'][$i]); ?>
-        <?php endfor; ?>
+      <div class="col-sm-1">
+        <div class="thumb-images">
+          <?php for ($i = 1; $i <= $num_images; $i++): ?>
+            <?php print render($content['field_product_image'][$i]); ?>
+          <?php endfor; ?>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <?php print render($content); ?>
+        <?php print render($product_quicktabs); ?>
       </div>
     </div>
-    <div class="col-sm-5">
-      <?php print render($content); ?>
-      <?php print render($product_quicktabs); ?>
+    <?php
+    // Only display the wrapper div if there are tags or links.
+    $field_tags = render($content['field_tags']);
+    $links = render($content['links']);
+    if ($field_tags || $links):
+      ?>
+      <footer>
+        <?php print $field_tags; ?>
+        <?php print $links; ?>
+      </footer>
+    <?php endif; ?>
+  <?php elseif ($teaser): ?>
+    <div class="product-teaser-image">
+      <?php print render($content['field_product_image'][0]); ?>
     </div>
-  </div>
-  <?php
-  // Only display the wrapper div if there are tags or links.
-  $field_tags = render($content['field_tags']);
-  $links = render($content['links']);
-  if ($field_tags || $links):
-    ?>
-    <footer>
-      <?php print $field_tags; ?>
-      <?php print $links; ?>
-    </footer>
+    <h3<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h3>
+    <div class="product-teaser-price">
+      <?php print render($content['product:commerce_price']); ?>
+    </div>
   <?php endif; ?>
 </article>

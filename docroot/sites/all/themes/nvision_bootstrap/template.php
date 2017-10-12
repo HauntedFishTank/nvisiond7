@@ -103,7 +103,7 @@ function nvision_bootstrap_status_messages($variables) {
  */
 function nvision_bootstrap_preprocess_page(&$variables) {
   // Add custom template page for About page.
-  if (isset($variables['node']->title) && $variables['node']->title === t('About')) {
+  if (isset($variables['node']->title) && ($variables['node']->title === t('About') || $variables['node']->title === t('Error'))) {
     $variables['theme_hook_suggestions'][] = 'page__about';
     drupal_set_title('');
   }
@@ -122,6 +122,13 @@ function nvision_bootstrap_preprocess_page(&$variables) {
       $variables['content_column_class'] = ' class="col-sm-8"';
     }
   }
+
+  // Remove the standard no front page content message from home page.
+  if ($variables['is_front']) {
+    drupal_set_title(t('@site-name', array('@site-name' => variable_get('site_name', 'Nvision Athletics'))), PASS_THROUGH);
+    unset($variables['page']['content']['system_main']);
+  }
+
 }
 
 /**
@@ -133,6 +140,11 @@ function nvision_bootstrap_preprocess_node(&$variables) {
       $variables['num_images'] = count($variables['field_product_image']);
     }
     $variables['product_quicktabs'] =  quicktabs_build_quicktabs('product_details');
+
+    if ($variables['view_mode'] == 'teaser') {
+      $variables['title_attributes_array']['class'][] = 'product-teaser-title';
+    }
+
   }
 }
 
