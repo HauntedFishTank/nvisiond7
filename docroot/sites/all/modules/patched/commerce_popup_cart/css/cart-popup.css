@@ -11,10 +11,6 @@
   position: relative;
 }
 
-#block-commerce-popup-cart-commerce-popup-cart a {
-  color: #333;
-}
-
 #block-commerce-popup-cart-commerce-popup-cart table {
   margin: 0;
   font-size: 12px;
@@ -125,16 +121,8 @@
 }
 
 #cart-popup .line-item-summary-checkout a {
-  background: url("images/cart-orange.png") repeat-x scroll;
-  color: #fff;
-  font-weight: bold;
-  padding: 3px;
   overflow: hidden;
   text-decoration: none;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  border: 1px solid #fff;
 }
 
 #cart-popup td {

@@ -93,6 +93,10 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
+        <div class="visible-xs-block mobile-cart">
+          <a href="/cart" class="navbar-cart"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></a>
+          <?php if ($product_count): ?><span class="badge"><?php print $product_count; ?></span><?php endif; ?>
+        </div>
       <?php endif; ?>
     </div>
 

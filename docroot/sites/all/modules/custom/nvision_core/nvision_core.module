@@ -72,3 +72,42 @@ function template_process_hero_carousel_block(&$variables) {
 
   $variables['hero_images'] = $hero_images;
 }
+
+/**
+ * Helper function to get the current user's cart quantity.
+ *
+ * @return int|null
+ */
+function _nvision_core_get_cart_quantity() {
+  global $user;
+
+  // First check to ensure there are products in the shopping cart.
+  if ($order = commerce_cart_order_load($user->uid)) {
+    $wrapper = entity_metadata_wrapper('commerce_order', $order);
+
+    $quantity = 0;
+
+    foreach ($wrapper->commerce_line_items as $line_item) {
+      if (!$line_item instanceof EntityMetadataWrapper) {
+        $line_item = entity_metadata_wrapper('commerce_line_item', $line_item);
+      }
+      $types = commerce_popup_cart_selected_line_items();
+
+      if (in_array($line_item->type->value(), $types)) {
+        $quantity += $line_item->quantity->value();
+      }
+    }
+
+    return (int) $quantity;
+  }
+
+  return NULL;
+}
+
+/**
+ * Implements hook_commerce_line_item_summary_link_info_alter().
+ */
+function nvision_core_commerce_line_item_summary_link_info_alter(&$links) {
+  $links['view_cart']['attributes']['class'] = array('btn', 'btn-default');
+  $links['checkout']['attributes']['class'] = array('btn', 'btn-success');
+}

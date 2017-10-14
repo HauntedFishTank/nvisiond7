@@ -12,15 +12,15 @@
  * for info.
  *
  * @param array $variables
- *   An associative array containing:
- *   - display: (optional) Set to 'status' or 'error' to display only messages
+ *     An associative array containing:
+ *     - display: (optional) Set to 'status' or 'error' to display only messages
  *     of that type.
  *
  * @return string
  *   The constructed HTML.
  *
- * @see theme_status_messages()
- * @see bootstrap_status_messages()
+ * @see     theme_status_messages()
+ * @see     bootstrap_status_messages()
  *
  * @ingroup theme_functions
  */
@@ -47,7 +47,7 @@ function nvision_bootstrap_status_messages($variables) {
     // Not supported, but in theory a module could send any type of message.
     // @see drupal_set_message()
     // @see theme_status_messages()
-    'info' => 'info',
+    'info'    => 'info',
   );
 
   // Retrieve messages.
@@ -103,7 +103,7 @@ function nvision_bootstrap_status_messages($variables) {
  */
 function nvision_bootstrap_preprocess_page(&$variables) {
   // Add custom template page for About page.
-  if (isset($variables['node']->title) && ($variables['node']->title === t('About') || $variables['node']->title === t('Error'))) {
+  if (isset($variables['node']->title) && ($variables['node']->title === t('About') || $variables['node']->title === t('Error!') || $variables['node']->title === t('Access Denied!'))) {
     $variables['theme_hook_suggestions'][] = 'page__about';
     drupal_set_title('');
   }
@@ -129,6 +129,8 @@ function nvision_bootstrap_preprocess_page(&$variables) {
     unset($variables['page']['content']['system_main']);
   }
 
+  // Hacky way to get the product count on mobiles.
+  $variables['product_count'] = _nvision_core_get_cart_quantity();
 }
 
 /**
@@ -139,7 +141,7 @@ function nvision_bootstrap_preprocess_node(&$variables) {
     if (isset($variables['field_product_image'])) {
       $variables['num_images'] = count($variables['field_product_image']);
     }
-    $variables['product_quicktabs'] =  quicktabs_build_quicktabs('product_details');
+    $variables['product_quicktabs'] = quicktabs_build_quicktabs('product_details');
 
     if ($variables['view_mode'] == 'teaser') {
       $variables['title_attributes_array']['class'][] = 'product-teaser-title';
@@ -166,4 +168,11 @@ function nvision_bootstrap_preprocess_entity(&$variables) {
       break;
   }
 
+}
+
+/**
+ * Implements template_bootstrap_iconize_text_alter().
+ */
+function nvision_bootstrap_bootstrap_iconize_text_alter(&$texts) {
+  $texts['matches'][t('Add to cart')] = 'shopping-cart';
 }
