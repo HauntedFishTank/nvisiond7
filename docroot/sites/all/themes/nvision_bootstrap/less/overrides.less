@@ -1052,10 +1052,12 @@ a {
     font-weight: 600;
     font-size: @font-size-large;
   }
-  .main-image,
-  .thumb-images {
-    img {
-      border: 1px solid @gray-lighter;
+  .main-image {
+    margin-bottom: 20px;
+    .thumb-images {
+      img {
+        border: 1px solid @gray-lighter;
+      }
     }
   }
   .easyzoom--adjacent .easyzoom-flyout {
@@ -1097,5 +1099,27 @@ a {
 #quicktabs-product_details {
   .tab-content {
     font-size: @font-size-medium;
+  }
+}
+
+.footer {
+  background: @gray-light;
+  border-top: 5px solid @gray-dark;
+  margin-top: 0;
+  padding-top: 20px;
+  .block-title {
+    text-transform: uppercase;
+    color: #FFF;
+    font-size: @font-size-h3;
+    font-weight: 300;
+    background: @gray-dark;
+    text-align: center;
+    padding: 10px;
+    margin-top: 8px;
+    margin-bottom: 26px;
+  }
+  .menu {
+    color: #fff;
+    font-size: @font-size-large;
   }
 }

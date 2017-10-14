@@ -7690,12 +7690,14 @@ a.icon-after .glyphicon {
   font-weight: 600;
   font-size: 18px;
 }
-.node-type-product .main-image img,
-.node-type-page .main-image img,
-.node-product .main-image img,
-.node-type-product .thumb-images img,
-.node-type-page .thumb-images img,
-.node-product .thumb-images img {
+.node-type-product .main-image,
+.node-type-page .main-image,
+.node-product .main-image {
+  margin-bottom: 20px;
+}
+.node-type-product .main-image .thumb-images img,
+.node-type-page .main-image .thumb-images img,
+.node-product .main-image .thumb-images img {
   border: 1px solid #eeeeee;
 }
 .node-type-product .easyzoom--adjacent .easyzoom-flyout,
@@ -7729,4 +7731,25 @@ a.icon-after .glyphicon {
 }
 #quicktabs-product_details .tab-content {
   font-size: 16px;
+}
+.footer {
+  background: #777777;
+  border-top: 5px solid #333333;
+  margin-top: 0;
+  padding-top: 20px;
+}
+.footer .block-title {
+  text-transform: uppercase;
+  color: #FFF;
+  font-size: 24px;
+  font-weight: 300;
+  background: #333333;
+  text-align: center;
+  padding: 10px;
+  margin-top: 8px;
+  margin-bottom: 26px;
+}
+.footer .menu {
+  color: #fff;
+  font-size: 18px;
 }

@@ -13,6 +13,10 @@ function nvision_core_block_info() {
       'info'  => t('Hero image carousel'),
       'cache' => DRUPAL_CACHE_GLOBAL,
     ),
+    'social_icons' => array(
+      'info'  => t('Social Media'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
   );
 }
 
@@ -29,6 +33,12 @@ function nvision_core_block_view($delta = '') {
         '#theme' => 'hero_carousel_block',
       );
       break;
+    case 'social_icons':
+      $block['subject'] = t('Social Media');
+      $block['content'] = array(
+        '#theme' => 'social_icons_block',
+      );
+      break;
   }
 
   return $block;
@@ -43,7 +53,37 @@ function nvision_core_theme($existing, $type, $theme, $path) {
       'variables' => array(),
       'template'  => 'templates/hero-carousel-block',
     ),
+    'social_icons_block' => array(
+      'variables' => array(),
+    ),
   );
+}
+
+/**
+ * Returns links for Social Media icons.
+ *
+ * @param $variables
+ *
+ * @return string
+ */
+function theme_social_icons_block($variables) {
+  $links = array();
+  $social_links = _nvision_core_social_links();
+
+  foreach ($social_links as $link => $url) {
+    $links[$link] = array(
+      'title' => drupal_ucfirst($link),
+      'href' => $url,
+      'attributes' => array(
+        'rel' => 'nofollow',
+        'class' => array(
+          'img-circle',
+        ),
+      ),
+    );
+  }
+
+  return theme('links', array('links' => $links));
 }
 
 /**
@@ -110,4 +150,28 @@ function _nvision_core_get_cart_quantity() {
 function nvision_core_commerce_line_item_summary_link_info_alter(&$links) {
   $links['view_cart']['attributes']['class'] = array('btn', 'btn-default');
   $links['checkout']['attributes']['class'] = array('btn', 'btn-success');
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function nvision_core_form_alter(&$form, &$form_state, $form_id) {
+  if (strpos($form_id, 'simplenews_block_form') !== FALSE) {
+    unset($form['mail']['#title']);
+    $form['mail']['#attributes']['placeholder'] = t('youremail@example.com');
+    $form['submit']['#attributes']['class'] = array('btn', 'btn-success', 'pull-right');
+  }
+}
+
+/**
+ * Returns social links.
+ *
+ * @return array
+ */
+function _nvision_core_social_links() {
+  return array(
+    'facebook' => 'https://www.facebook.com/NvisionAthletics',
+    'twitter' => 'https://twitter.com/officialnvision',
+    'instagram' => 'https://www.instagram.com/Nvision.Athletics',
+  );
 }
