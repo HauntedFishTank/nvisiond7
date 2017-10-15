@@ -7635,6 +7635,10 @@ a.icon-after .glyphicon {
 .paragraph-right-text-content p + p {
   margin-top: 80px;
 }
+.paragraphs-item-full-width-image-with-text h1 {
+  font-weight: 900;
+  font-size: 48px;
+}
 .paragraph-left-text-content {
   padding: 50px;
   font-size: 30px;
@@ -7722,7 +7726,7 @@ a.icon-after .glyphicon {
   box-shadow: inset 0px 0px 0px 1px #333333;
 }
 .cart-empty-page,
-.commerce-line-item-actions,
+.commerce-line-item-actions#edit-actions,
 .block-webform {
   margin-bottom: 40px;
 }
