@@ -182,6 +182,6 @@ function nvision_bootstrap_bootstrap_iconize_text_alter(&$texts) {
  */
 function nvision_bootstrap_preprocess_block(&$variables) {
 if  ($variables['block']->delta == 'social_icons') {
-  dpm($variables);
+  //dpm($variables);
 }
 }

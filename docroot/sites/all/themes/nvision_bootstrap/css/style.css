@@ -7721,6 +7721,9 @@ a.icon-after .glyphicon {
 #block-views-products-block .product-teaser:hover {
   box-shadow: inset 0px 0px 0px 1px #333333;
 }
+.cart-empty-page {
+  margin-bottom: 40px;
+}
 .commerce-product-field {
   font-size: 16px;
   font-weight: 600;
@@ -7752,4 +7755,36 @@ a.icon-after .glyphicon {
 .footer .menu {
   color: #fff;
   font-size: 18px;
+}
+.footer #block-nvision-core-social-icons ul {
+  list-style: none;
+  padding: 0;
+}
+.footer #block-nvision-core-social-icons ul li {
+  box-sizing: content-box;
+}
+.footer .fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 30px;
+  text-align: center;
+  text-decoration: none;
+  margin: 0 6px;
+  border-radius: 50%;
+  box-sizing: content-box;
+}
+.footer .fa:hover {
+  opacity: 0.7;
+}
+.footer .fa-facebook {
+  background: #3b5998;
+  color: white;
+}
+.footer .fa-twitter {
+  background: #55acee;
+  color: white;
+}
+.footer .fa-instagram {
+  background: #d83074;
+  color: white;
 }

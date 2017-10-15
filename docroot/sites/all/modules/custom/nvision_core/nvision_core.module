@@ -67,23 +67,30 @@ function nvision_core_theme($existing, $type, $theme, $path) {
  * @return string
  */
 function theme_social_icons_block($variables) {
+  $output = '';
   $links = array();
   $social_links = _nvision_core_social_links();
 
   foreach ($social_links as $link => $url) {
-    $links[$link] = array(
-      'title' => drupal_ucfirst($link),
-      'href' => $url,
-      'attributes' => array(
-        'rel' => 'nofollow',
-        'class' => array(
-          'img-circle',
+    $link = array(
+      'text' => '<span class="sr-only">' . drupal_ucfirst($link) . '</span>',
+      'path' => $url,
+      'options' => array(
+        'html' => TRUE,
+        'attributes' => array(
+          'rel' => 'nofollow',
+          'class' => array(
+            'fa',
+            'fa-' . $link,
+          ),
         ),
+
       ),
     );
+    $output .= theme('link', $link);
   }
 
-  return theme('links', array('links' => $links));
+  return $output;
 }
 
 /**
