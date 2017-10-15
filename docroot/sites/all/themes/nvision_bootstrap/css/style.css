@@ -7721,7 +7721,9 @@ a.icon-after .glyphicon {
 #block-views-products-block .product-teaser:hover {
   box-shadow: inset 0px 0px 0px 1px #333333;
 }
-.cart-empty-page {
+.cart-empty-page,
+.commerce-line-item-actions,
+.block-webform {
   margin-bottom: 40px;
 }
 .commerce-product-field {

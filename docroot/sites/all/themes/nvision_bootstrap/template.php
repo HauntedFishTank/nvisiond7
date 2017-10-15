@@ -175,13 +175,5 @@ function nvision_bootstrap_preprocess_entity(&$variables) {
  */
 function nvision_bootstrap_bootstrap_iconize_text_alter(&$texts) {
   $texts['matches'][t('Add to cart')] = 'shopping-cart';
-}
-
-/**
- * Implements template_preprocess_block().
- */
-function nvision_bootstrap_preprocess_block(&$variables) {
-if  ($variables['block']->delta == 'social_icons') {
-  //dpm($variables);
-}
+  $texts['matches'][t('Send')] = 'envelope';
 }
