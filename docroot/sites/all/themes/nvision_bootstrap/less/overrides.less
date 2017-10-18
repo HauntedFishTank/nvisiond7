@@ -1004,6 +1004,12 @@ a {
     font-weight: 900;
     font-size: 48px;
   }
+  .paragraph-text-content {
+    width: 50%;
+    .gold {
+      color: #ac7c1b;
+    }
+  }
 }
 
 .paragraph-left-text-content {
@@ -1048,6 +1054,10 @@ a {
 }
 h1::first-letter {
   font-size: 46px;
+}
+
+.nvision::first-letter {
+  font-size: @font-size-large;
 }
 
 .node-type-product,
@@ -1104,8 +1114,16 @@ h1::first-letter {
 .node-basic-page,
 .cart-empty-page,
 .commerce-line-item-actions#edit-actions,
-.block-webform {
+.block-webform,
+#user-login,
+.field-name-field-product {
   margin-bottom: 40px;
+}
+
+.node-basic-page {
+  .field-name-body {
+    font-size: @font-size-large;
+  }
 }
 
 .commerce-product-field {
@@ -1114,13 +1132,9 @@ h1::first-letter {
   margin-bottom: 20px;
 }
 
-.field-name-field-product {
-  margin-bottom: 40px;
-}
-
 #quicktabs-product_details {
   .tab-content {
-    font-size: @font-size-medium;
+    font-size: @font-size-large;
   }
 }
 
@@ -1129,6 +1143,9 @@ h1::first-letter {
   border-top: 5px solid @gray-dark;
   margin-top: 0;
   padding-top: 20px;
+  .block {
+    margin-bottom: 40px;
+  }
   .block-title {
     text-transform: uppercase;
     color: #FFF;
@@ -1179,6 +1196,10 @@ h1::first-letter {
   .fa-instagram {
     background: #d83074;
     color: white;
+  }
+  .newsletter-message {
+    font-size: @font-size-medium;
+    color: #fff;
   }
   #block-menu-menu-footer {
     .nav > li > a {

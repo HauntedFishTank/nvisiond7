@@ -125,7 +125,8 @@ function nvision_bootstrap_preprocess_page(&$variables) {
 
   // Remove the standard no front page content message from home page.
   if ($variables['is_front']) {
-    drupal_set_title(t('@site-name', array('@site-name' => variable_get('site_name', 'Nvision Athletics'))), PASS_THROUGH);
+    //drupal_set_title(t('@site-name', array('@site-name' => variable_get('site_name', 'Nvision Athletics'))), PASS_THROUGH);
+    drupal_set_title('');
     unset($variables['page']['content']['system_main']);
   }
 
