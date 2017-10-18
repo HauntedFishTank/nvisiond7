@@ -109,7 +109,7 @@ function nvision_bootstrap_preprocess_page(&$variables) {
   }
 
   // Force empty regions to show on the Contact Page.
-  if (isset($variables['node']->title) && $variables['node']->title === t('Contact Us')) {
+  if (isset($variables['node']->title) && in_array($variables['node']->title, _nvision_bootstrap_narrow_pages())) {
     if (empty($variables['page']['sidebar_first']) && empty($variables['page']['sidebar_second'])) {
       $variables['page']['sidebar_first'] = array(
         '#region' => 'sidebar_first',
@@ -131,6 +131,24 @@ function nvision_bootstrap_preprocess_page(&$variables) {
 
   // Hacky way to get the product count on mobiles.
   $variables['product_count'] = _nvision_core_get_cart_quantity();
+}
+
+/**
+ * Helper function for narrow Basic Pages.
+ * @todo make configurable...?
+ *
+ * @return array
+ */
+function _nvision_bootstrap_narrow_pages() {
+  return array(
+    t('Contact Us'),
+    t('Shipping and Delivery'),
+    t('Returns and Exchanges'),
+    t('Frequently Asked Questions'),
+    t('Size Guide'),
+    t('Website Privacy Policy'),
+    t('Terms and Conditions for Use and Sales'),
+  );
 }
 
 /**

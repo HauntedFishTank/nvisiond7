@@ -6,3 +6,5 @@ docroot/sites/default/settings.local.php
 tmp
 vendor
 *.sql
+config.codekit3
+docroot/.htaccess

@@ -3,7 +3,7 @@
 @normal:              ~"screen and (min-width: @{screen-md-min})";
 @wide:                ~"screen and (min-width: @{screen-lg-min})";
 @grid-breakpoint:     ~"screen and (min-width: @{grid-float-breakpoint})";
-
+@font-family-serif:       "Times New Roman", Georgia, Times, serif;
 @font-size-medium:         ceil((@font-size-base * 1.14)); // ~16px
 
 // Drop shadows.
@@ -1039,14 +1039,23 @@ a {
   margin-top: 0;
 }
 
+.page-header {
+  font-family: @font-family-serif;
+  text-transform: uppercase;
+  border-bottom: 4px solid @gray-lighter;
+  font-weight: 300;
+  margin-bottom: 30px;
+}
+h1::first-letter {
+  font-size: 46px;
+}
+
 .node-type-product,
 .node-type-page,
+.node-type-basic-page,
 .node-product {
-  .page-header {
-    text-transform: uppercase;
-    font-weight: 300;
-    margin-bottom: 30px;
-    border-bottom: 4px solid @gray-lighter;
+  .product-teaser-title {
+    font-family: @font-family-serif;
   }
   .product-teaser-title,
   .product-teaser-price {
@@ -1073,10 +1082,9 @@ a {
   .easyzoom-thumbnails {
     margin-bottom: 20px;
   }
-}
-
-.block + .block-webform {
-  margin-top: 20px;
+  .size-guide {
+    margin: 20px 0;
+  }
 }
 
 #block-views-products-block {
@@ -1092,6 +1100,8 @@ a {
     }
   }
 }
+
+.node-basic-page,
 .cart-empty-page,
 .commerce-line-item-actions#edit-actions,
 .block-webform {
@@ -1169,5 +1179,17 @@ a {
   .fa-instagram {
     background: #d83074;
     color: white;
+  }
+  #block-menu-menu-footer {
+    .nav > li > a {
+      display: inline;
+      padding: inherit;
+      color: #fff;
+      &:hover,
+      &:focus {
+        background: transparent;
+        text-decoration: underline;
+      }
+    }
   }
 }
