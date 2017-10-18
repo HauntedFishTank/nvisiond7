@@ -159,8 +159,9 @@ function nvision_bootstrap_preprocess_node(&$variables) {
     if (isset($variables['field_product_image'])) {
       $variables['num_images'] = count($variables['field_product_image']);
     }
-    $variables['product_quicktabs'] = quicktabs_build_quicktabs('product_details');
-
+    if ($variables['view_mode'] == 'full') {
+      $variables['product_quicktabs'] = quicktabs_build_quicktabs('product_details');
+    }
     if ($variables['view_mode'] == 'teaser') {
       $variables['title_attributes_array']['class'][] = 'product-teaser-title';
     }
