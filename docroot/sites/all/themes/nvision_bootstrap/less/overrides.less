@@ -1,5 +1,7 @@
 // Media query variables.
+@mobile:              ~"screen and (max-width: @{screen-xs-max})";
 @tablet:              ~"screen and (min-width: @{screen-sm-min})";
+@onlytablet:          ~"screen and (max-width: @{screen-sm-max})";
 @normal:              ~"screen and (min-width: @{screen-md-min})";
 @wide:                ~"screen and (min-width: @{screen-lg-min})";
 @grid-breakpoint:     ~"screen and (min-width: @{grid-float-breakpoint})";
@@ -960,6 +962,10 @@ a {
 //.navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus
 
 // Paragraphs
+.entity-paragraphs-item {
+  clear: both;
+}
+
 .content.paragraph-image-text {
   position: relative;
   .paragraph-text-content {
@@ -981,7 +987,6 @@ a {
   clear: both;
 }
 
-
 .paragraph-left-text-content,
 .paragraph-left-image,
 .paragraph-right-text-content,
@@ -999,15 +1004,38 @@ a {
   }
 }
 
-.paragraphs-item-full-width-image-with-text {
+.paragraphs-item-full-width-image-with-text,
+.paragraphs-item-full-width-image-with-text-logo {
+  position: relative;
   h1 {
     font-weight: 900;
     font-size: 48px;
   }
   .paragraph-text-content {
     width: 50%;
+    text-shadow: 0px 4px 8px #000;
     .gold {
       color: #ac7c1b;
+    }
+  }
+}
+
+.paragraphs-item-full-width-image-with-text-logo {
+  .content.paragraph-image-text {
+    position: relative;
+    .paragraph-text-content {
+      @media @wide {
+        top: 200px;
+      }
+      h1 {
+        margin-left: -220px;
+      }
+      .field-name-field-logo {
+        position: absolute;
+        @media @normal {
+          margin-left: 50%;
+        }
+      }
     }
   }
 }
@@ -1029,12 +1057,122 @@ a {
     }
   }
 }
+
 .paragraph-text-content.center {
   position: absolute;
   top: 50%;
   margin: 0 auto;
   text-align: center;
   width: 100%;
+}
+
+
+@media @onlytablet {
+  .paragraph-left-text-content,
+  .paragraph-left-image,
+  .paragraph-right-text-content,
+  .paragraph-right-image {
+    width: 100%;
+    float: none;
+  }
+
+  .paragraphs-item-full-width-image-with-text,
+  .paragraphs-item-full-width-image-with-text-logo {
+    .paragraph-text-content {
+      width: 100%;
+    }
+  }
+
+  .paragraphs-item-full-width-image-with-text-logo {
+    .content.paragraph-image-text {
+      .paragraph-text-content {
+        top: 50px;
+        h1 {
+          font-size: 36px;
+          margin-left: -220px;
+        }
+        .field-name-field-logo {
+          position: absolute;
+          margin-left: 50%;
+          top: -10px;
+        }
+        font-size: 24px;
+        padding: 0;
+      }
+    }
+  }
+
+}
+
+
+
+@media @mobile {
+  .paragraph-left-text-content,
+  .paragraph-left-image,
+  .paragraph-right-text-content,
+  .paragraph-right-image {
+    width: 100%;
+    float: none;
+  }
+
+  .content.paragraph-image-text {
+    .paragraph-text-content {
+      font-size: 20px;
+      padding: 0;
+    }
+  }
+
+  .paragraphs-item-full-width-image-with-text,
+  .paragraphs-item-full-width-image-with-text-logo {
+    .paragraph-text-content {
+      width: 100%;
+    }
+  }
+
+  .paragraphs-item-full-width-image-with-text-logo {
+    .content.paragraph-image-text {
+      .paragraph-text-content {
+        h1 {
+          font-size: 20px;
+        }
+        font-size: 16px;
+        .field-name-field-paragraph-text {
+          padding: 0 10px;
+          br {
+            display: none;
+          }
+          strong {
+            margin-left: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  .paragraph-right-text-content,
+  .paragraph-left-text-content {
+    padding: 20px;
+    font-size: 24px;
+    line-height: 30px;
+    p+p {
+      margin-top: 20px;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 30px;
+    }
+  }
+  .paragraph-left-text-content {
+    p {
+      margin-left: 10px;
+      strong {
+        margin-left: -10px;
+      }
+    }
+  }
+
 }
 
 .main-container {
@@ -1052,12 +1190,12 @@ a {
   font-weight: 300;
   margin-bottom: 30px;
 }
-h1::first-letter {
+h1.page-header::first-letter {
   font-size: 46px;
 }
 
 .nvision::first-letter {
-  font-size: @font-size-large;
+  font-size: 110%;
 }
 
 .node-type-product,

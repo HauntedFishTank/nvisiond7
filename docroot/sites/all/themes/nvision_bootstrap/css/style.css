@@ -7601,6 +7601,9 @@ a.icon-after .glyphicon {
   left: 20px;
   top: -10px;
 }
+.entity-paragraphs-item {
+  clear: both;
+}
 .content.paragraph-image-text {
   position: relative;
 }
@@ -7635,15 +7638,42 @@ a.icon-after .glyphicon {
 .paragraph-right-text-content p + p {
   margin-top: 80px;
 }
-.paragraphs-item-full-width-image-with-text h1 {
+.paragraphs-item-full-width-image-with-text,
+.paragraphs-item-full-width-image-with-text-logo {
+  position: relative;
+}
+.paragraphs-item-full-width-image-with-text h1,
+.paragraphs-item-full-width-image-with-text-logo h1 {
   font-weight: 900;
   font-size: 48px;
 }
-.paragraphs-item-full-width-image-with-text .paragraph-text-content {
+.paragraphs-item-full-width-image-with-text .paragraph-text-content,
+.paragraphs-item-full-width-image-with-text-logo .paragraph-text-content {
   width: 50%;
+  text-shadow: 0px 4px 8px #000;
 }
-.paragraphs-item-full-width-image-with-text .paragraph-text-content .gold {
+.paragraphs-item-full-width-image-with-text .paragraph-text-content .gold,
+.paragraphs-item-full-width-image-with-text-logo .paragraph-text-content .gold {
   color: #ac7c1b;
+}
+.paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text {
+  position: relative;
+}
+@media screen and (min-width: 1200px) {
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content {
+    top: 200px;
+  }
+}
+.paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content h1 {
+  margin-left: -220px;
+}
+.paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content .field-name-field-logo {
+  position: absolute;
+}
+@media screen and (min-width: 992px) {
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content .field-name-field-logo {
+    margin-left: 50%;
+  }
 }
 .paragraph-left-text-content {
   padding: 50px;
@@ -7669,6 +7699,88 @@ a.icon-after .glyphicon {
   text-align: center;
   width: 100%;
 }
+@media screen and (max-width: 991px) {
+  .paragraph-left-text-content,
+  .paragraph-left-image,
+  .paragraph-right-text-content,
+  .paragraph-right-image {
+    width: 100%;
+    float: none;
+  }
+  .paragraphs-item-full-width-image-with-text .paragraph-text-content,
+  .paragraphs-item-full-width-image-with-text-logo .paragraph-text-content {
+    width: 100%;
+  }
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content {
+    top: 50px;
+    font-size: 24px;
+    padding: 0;
+  }
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content h1 {
+    font-size: 36px;
+    margin-left: -220px;
+  }
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content .field-name-field-logo {
+    position: absolute;
+    margin-left: 50%;
+    top: -10px;
+  }
+}
+@media screen and (max-width: 767px) {
+  .paragraph-left-text-content,
+  .paragraph-left-image,
+  .paragraph-right-text-content,
+  .paragraph-right-image {
+    width: 100%;
+    float: none;
+  }
+  .content.paragraph-image-text .paragraph-text-content {
+    font-size: 20px;
+    padding: 0;
+  }
+  .paragraphs-item-full-width-image-with-text .paragraph-text-content,
+  .paragraphs-item-full-width-image-with-text-logo .paragraph-text-content {
+    width: 100%;
+  }
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content {
+    font-size: 16px;
+  }
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content h1 {
+    font-size: 20px;
+  }
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content .field-name-field-paragraph-text {
+    padding: 0 10px;
+  }
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content .field-name-field-paragraph-text br {
+    display: none;
+  }
+  .paragraphs-item-full-width-image-with-text-logo .content.paragraph-image-text .paragraph-text-content .field-name-field-paragraph-text strong {
+    margin-left: 10px;
+  }
+  .paragraph-right-text-content,
+  .paragraph-left-text-content {
+    padding: 20px;
+    font-size: 24px;
+    line-height: 30px;
+  }
+  .paragraph-right-text-content p + p,
+  .paragraph-left-text-content p + p {
+    margin-top: 20px;
+  }
+  .paragraph-right-text-content h2,
+  .paragraph-left-text-content h2 {
+    margin-top: 0;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 30px;
+  }
+  .paragraph-left-text-content p {
+    margin-left: 10px;
+  }
+  .paragraph-left-text-content p strong {
+    margin-left: -10px;
+  }
+}
 .main-container {
   margin-top: 40px;
 }
@@ -7682,11 +7794,11 @@ a.icon-after .glyphicon {
   font-weight: 300;
   margin-bottom: 30px;
 }
-h1::first-letter {
+h1.page-header::first-letter {
   font-size: 46px;
 }
 .nvision::first-letter {
-  font-size: 18px;
+  font-size: 110%;
 }
 .node-type-product .product-teaser-title,
 .node-type-page .product-teaser-title,
