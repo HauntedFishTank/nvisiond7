@@ -99,6 +99,15 @@ function nvision_bootstrap_status_messages($variables) {
 }
 
 /**
+ * Implements template_preprocess_html().
+ */
+function nvision_bootstrap_preprocess_html(&$variables) {
+  if (drupal_get_path_alias() === 'women') {
+    $variables['body_attributes_array']['class'][] = 'women';
+  }
+}
+
+/**
  * Implements template_preprocess_page().
  */
 function nvision_bootstrap_preprocess_page(&$variables) {
@@ -106,6 +115,15 @@ function nvision_bootstrap_preprocess_page(&$variables) {
   if (isset($variables['node']->title) && ($variables['node']->title === t('About') || $variables['node']->title === t('Error!') || $variables['node']->title === t('Access Denied!'))) {
     $variables['theme_hook_suggestions'][] = 'page__about';
     drupal_set_title('');
+  }
+
+  // Placeholder for Women's section.
+  if (isset($variables['node']->title) && ($variables['node']->title === t('Women'))) {
+    $variables['theme_hook_suggestions'][] = 'page__women';
+    drupal_set_title('Coming Soon');
+
+    $variables['page']['social'] = module_invoke('nvision_core', 'block_view', 'social_icons');
+    $variables['page']['newsletter'] = module_invoke('simplenews', 'block_view', 6);
   }
 
   // Force empty regions to show on the Contact Page.
@@ -125,8 +143,7 @@ function nvision_bootstrap_preprocess_page(&$variables) {
 
   // Remove the standard no front page content message from home page.
   if ($variables['is_front']) {
-    //drupal_set_title(t('@site-name', array('@site-name' => variable_get('site_name', 'Nvision Athletics'))), PASS_THROUGH);
-    drupal_set_title('');
+    drupal_set_title(t('@site-name', array('@site-name' => variable_get('site_name', 'Nvision Athletics'))), PASS_THROUGH);
     unset($variables['page']['content']['system_main']);
   }
 
@@ -162,6 +179,17 @@ function nvision_bootstrap_preprocess_node(&$variables) {
     }
     if ($variables['view_mode'] == 'full') {
       $variables['product_quicktabs'] = quicktabs_build_quicktabs('product_details');
+      $variables['size_guide'] = array(
+        '#type'  => 'link',
+        '#title' => t('Size guide'),
+        '#href'  => 'node/30',
+        '#attributes' => array(
+          'class' => array(
+            'btn',
+            'btn-danger',
+          ),
+        ),
+      );
     }
     if ($variables['view_mode'] == 'teaser') {
       $variables['title_attributes_array']['class'][] = 'product-teaser-title';

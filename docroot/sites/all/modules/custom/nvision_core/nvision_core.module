@@ -94,6 +94,20 @@ function theme_social_icons_block($variables) {
 }
 
 /**
+ * Implements hook_google_recaptcha_always_protect_alter().
+ */
+function nvision_core_google_recaptcha_always_protect_alter(&$always_protected) {
+  $always_protected[] = 'webform_client_form_16';
+}
+
+/**
+ * Implements hook_google_recaptcha_available_forms_alter().
+ */
+function nvision_core_google_recaptcha_available_forms_alter(&$available_forms) {
+  $always_protected[] = 'webform_client_form_16';
+}
+
+/**
  * Template preprocess handler for 'hero_carousel_block' theme.
  */
 function template_process_hero_carousel_block(&$variables) {

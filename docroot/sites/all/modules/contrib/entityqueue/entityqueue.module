@@ -349,7 +349,7 @@ function entityqueue_entity_info() {
         'real path' => 'admin/structure/entityqueue/list/' . $name,
         'bundle argument' => 4,
         'access callback' => 'entityqueue_queue_access',
-        'access arguments' => array('view', 4),
+        'access arguments' => array('view', $name),
       ),
     );
   }
@@ -624,7 +624,7 @@ function entityqueue_contextual_links_view_alter(&$element, $items) {
           $subqueue = entityqueue_subqueue_load(reset($referenced_subqueues));
 
           if ($subqueue) {
-            $path = 'admin/structure/entityqueue/list/' . $subqueue->name . '/subqueues/' . $subqueue->subqueue_id . '/edit';
+            $path = 'admin/structure/entityqueue/list/' . $subqueue->queue . '/subqueues/' . $subqueue->subqueue_id . '/edit';
             $element['#links']['entityqueue-order'] = array(
               'title' => t('Edit subqueue'),
               'href' => $path,
@@ -1104,7 +1104,7 @@ function entityqueue_widget_dragtable_element_validate($element, &$form_state) {
   }
   form_set_value($element, $items, $form_state);
   // Rebuild form if ajax callback button was clicked.
-  if (current_path() == 'system/ajax') {
+  if (current_path() == 'system/ajax' && $triggering_element['#ajax']['callback'] == 'entityqueue_field_widget_ajax_callback') {
     $form_state['rebuild'] = TRUE;
   }
 }
