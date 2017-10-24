@@ -7722,6 +7722,15 @@ a:focus {
   width: 100%;
 }
 @media screen and (max-width: 991px) {
+  .navbar-default {
+    font-size: 12px;
+  }
+  .navbar-default .secondary li {
+    font-size: 10px;
+  }
+  .nav > li > a {
+    padding: 25px 10px;
+  }
   .paragraph-left-text-content,
   .paragraph-left-image,
   .paragraph-right-text-content,
