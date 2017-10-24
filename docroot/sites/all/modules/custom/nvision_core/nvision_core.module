@@ -178,6 +178,24 @@ function nvision_core_commerce_line_item_summary_link_info_alter(&$links) {
  */
 function nvision_core_form_alter(&$form, &$form_state, $form_id) {
   if (strpos($form_id, 'simplenews_block_form') !== FALSE) {
+    global $user;
+    $tid = $form['#tid'];
+
+    if ($user->uid) {
+      if (!simplenews_user_is_subscribed($user->mail, $tid)) {
+        $form['mail'] = array(
+          '#type'      => 'textfield',
+          '#value'     => $user->mail,
+          '#title'     => t('E-mail'),
+          '#size'      => 20,
+          '#maxlength' => 128,
+          '#required'  => TRUE,
+        );
+        $form['action'] = array('#type' => 'value', '#value' => 'subscribe');
+        $form['#attributes'] = array('class' => array('simplenews-subscribe'));
+      }
+    }
+
     unset($form['mail']['#title']);
     $form['mail']['#attributes']['placeholder'] = t('youremail@example.com');
     $form['submit']['#attributes']['class'] = array('btn', 'btn-success', 'pull-right');

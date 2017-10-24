@@ -7569,6 +7569,9 @@ a:focus {
   background: #fff;
   color: #777;
 }
+.navbar-default .secondary li {
+  font-size: 12px;
+}
 .navbar-nav > li > a {
   padding-top: 26px;
 }
@@ -7888,7 +7891,9 @@ h1.page-header::first-letter {
 .commerce-line-item-actions#edit-actions,
 .block-webform,
 #user-login,
-.field-name-field-product {
+.field-name-field-product,
+#user-profile-form #edit-actions,
+#simplenews-subscriptions-page-form {
   margin-bottom: 40px;
 }
 .node-basic-page .field-name-body {
