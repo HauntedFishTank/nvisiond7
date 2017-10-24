@@ -7893,6 +7893,7 @@ h1.page-header::first-letter {
 #user-login,
 .field-name-field-product,
 #user-profile-form #edit-actions,
+#edit-account #edit-actions,
 #simplenews-subscriptions-page-form {
   margin-bottom: 40px;
 }
