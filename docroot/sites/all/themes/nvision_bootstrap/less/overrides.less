@@ -1290,7 +1290,9 @@ h1.page-header::first-letter {
 #user-register-form #edit-actions,
 #edit-account #edit-actions,
 #user-pass #edit-actions,
-#simplenews-subscriptions-page-form {
+#simplenews-subscriptions-page-form,
+.page-user-orders .view-commerce-user-orders,
+.entity-commerce-order.commerce-order-commerce-order {
   margin-bottom: 40px;
 }
 
@@ -1304,6 +1306,13 @@ h1.page-header::first-letter {
   font-size: @font-size-medium;
   font-weight: 600;
   margin-bottom: 20px;
+}
+
+// Order page
+.field-name-commerce-customer-billing.field-type-commerce-customer-profile-reference,
+.field-name-commerce-customer-shipping.field-type-commerce-customer-profile-reference {
+  float: left !important;
+  margin-right: 60px;
 }
 
 #quicktabs-product_details {

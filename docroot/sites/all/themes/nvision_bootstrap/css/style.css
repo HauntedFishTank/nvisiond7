@@ -7905,7 +7905,9 @@ h1.page-header::first-letter {
 #user-register-form #edit-actions,
 #edit-account #edit-actions,
 #user-pass #edit-actions,
-#simplenews-subscriptions-page-form {
+#simplenews-subscriptions-page-form,
+.page-user-orders .view-commerce-user-orders,
+.entity-commerce-order.commerce-order-commerce-order {
   margin-bottom: 40px;
 }
 .node-basic-page .field-name-body {
@@ -7915,6 +7917,11 @@ h1.page-header::first-letter {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 20px;
+}
+.field-name-commerce-customer-billing.field-type-commerce-customer-profile-reference,
+.field-name-commerce-customer-shipping.field-type-commerce-customer-profile-reference {
+  float: left !important;
+  margin-right: 60px;
 }
 #quicktabs-product_details .tab-content {
   font-size: 18px;

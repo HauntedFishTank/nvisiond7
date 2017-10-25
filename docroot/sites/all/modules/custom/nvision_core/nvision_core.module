@@ -203,6 +203,25 @@ function nvision_core_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function nvision_core_menu_alter(&$items) {
+  // Custom callback for Order page.
+  $items['user/%user/orders/%commerce_order']['title callback'] = 'nvision_core_commerce_order_ui_order_title';
+}
+
+/**
+ * Replacement title callback function for Orders.
+ *
+ * @param $order
+ *
+ * @return null|string
+ */
+function nvision_core_commerce_order_ui_order_title($order) {
+  return t('Order #@number', array('@number' => $order->order_number));
+}
+
+/**
  * Returns social links.
  *
  * @return array
