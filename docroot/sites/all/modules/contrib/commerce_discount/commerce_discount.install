@@ -133,15 +133,15 @@ function commerce_discount_schema() {
     'foreign keys' => array(
       'discount' => array(
         'table' => 'commerce_discount',
-        'column' => array('discount' => 'name'),
+        'columns' => array('discount' => 'name'),
       ),
       'order_id' => array(
         'table' => 'commerce_order',
-        'column' => array('order_id' => 'order_id'),
+        'columns' => array('order_id' => 'order_id'),
       ),
       'mail' => array(
         'table' => 'users',
-        'column' => array('mail' => 'mail'),
+        'columns' => array('mail' => 'mail'),
       ),
     ),
     'indexes' => array(
@@ -189,7 +189,7 @@ function commerce_discount_install_helper() {
   $field_types = field_info_field_types();
   // Clear field info cache, so entity reference, inline_conditions and
   // commerce_product_reference field types can be used.
-  if (!isset($field_types['entityreference'], $field_types['inline_conditions'], $field_types['commerce_product_reference'])) {
+  if (!isset($field_types['entityreference'], $field_types['inline_conditions'], $field_types['commerce_product_reference'], $field_types['datestamp'])) {
     field_info_cache_clear();
     // Overwrites variable, because during installation module after clears the
     // field info cache the field type 'entityreference' not containing
@@ -1084,6 +1084,11 @@ function commerce_discount_update_7109() {
  * Enable and update usage and date sub-modules into discount core.
  */
 function commerce_discount_update_7110() {
+  // Fail early if the Date module is not present.
+  if (!module_exists('date')) {
+    throw new DrupalUpdateException('The Date module is required.');
+  }
+
   commerce_discount_install_helper();
   $fields = field_read_fields(array(), array('include_inactive' => TRUE));
 
@@ -1094,7 +1099,7 @@ function commerce_discount_update_7110() {
   // Migrate from commerce_discount_max_uses to discount_usage_limit.
   foreach (entity_load('commerce_discount') as $discount) {
     $wrapper = entity_metadata_wrapper('commerce_discount', $discount);
-    if (!isset($wrapper->discount_usage_limit) || $wrapper->discount_usage_limit->value() == FALSE
+    if ((!isset($wrapper->discount_usage_limit) || $wrapper->discount_usage_limit->value() == FALSE)
       && isset($wrapper->commerce_discount_max_uses) && $wrapper->commerce_discount_max_uses->value()) {
       $wrapper->discount_usage_limit = $wrapper->commerce_discount_max_uses->value();
       entity_save('commerce_discount', $discount);

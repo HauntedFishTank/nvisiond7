@@ -50,10 +50,18 @@ function commerce_discount_default_rules_configuration() {
       // discount is compatible with any other discount, we need to prevent it
       // from being added if a previously applied discount indicates it is not
       // compatible with the current one.
-      $rule->condition('commerce_discount_compatibility_check', array(
-        'commerce_order:select' => $type['entity type'] == 'commerce_order' ? 'commerce-order' : 'commerce-line-item:order',
-        'commerce_discount' => $discount->name,
-      ));
+      if ($type['entity type'] == 'commerce_order') {
+        $rule->condition('commerce_discount_compatibility_check', array(
+          'commerce_order:select' => 'commerce-order',
+          'commerce_discount' => $discount->name,
+        ));
+      }
+      else {
+        $rule->condition('commerce_discount_line_item_compatibility_check', array(
+          'commerce_line_item:select' => 'commerce-line-item',
+          'commerce_discount' => $discount->name,
+        ));
+      }
 
       // Let other modules alter the rule object, with configuration specific
       // to commerce discount. We don't invoke an alter function, as it can
@@ -82,6 +90,22 @@ function commerce_discount_default_rules_configuration() {
       $rules[$rule_machine_name] = $rule;
     }
   }
+
+  // Create a new rule.
+  $rule = rules_reaction_rule();
+
+  $rule->label = t('Discount shipping services');
+  $rule->active = TRUE;
+  $rule->weight = 10;
+
+  // Discount shipping services once all methods have been collected.
+  $rule
+    ->event('commerce_shipping_collect_rates')
+    ->action('commerce_discount_shipping_services', array(
+      'commerce_order:select' => 'commerce-order',
+    ));
+
+  $rules['commerce_discount_shipping_services'] = $rule;
 
   return $rules;
 }
