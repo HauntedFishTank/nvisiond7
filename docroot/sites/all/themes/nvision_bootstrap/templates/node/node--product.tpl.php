@@ -113,7 +113,9 @@
       <div class="col-sm-5">
         <?php print render($content); ?>
         <?php print render($product_quicktabs); ?>
-        <?php print render($size_guide); ?>
+        <div class="size-guide">
+          <?php print render($size_guide); ?>
+        </div>
       </div>
     </div>
     <?php
