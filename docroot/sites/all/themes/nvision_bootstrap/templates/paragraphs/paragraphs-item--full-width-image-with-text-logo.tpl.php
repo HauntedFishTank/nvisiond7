@@ -29,7 +29,7 @@
 <div class="<?php print $classes; ?>"<?php print $attributes; ?>>
   <div class="content paragraph-image-text"<?php print $content_attributes; ?>>
     <?php print render($content['field_image']); ?>
-    <div class="paragraph-text-content <?php print $text_position; ?>">
+    <div class="paragraph-text-content <?php if (isset($text_position)) { print $text_position; } ?>">
       <?php print render($content['field_logo']); ?>
       <?php print render($content['field_paragraph_text']); ?>
     </div>
