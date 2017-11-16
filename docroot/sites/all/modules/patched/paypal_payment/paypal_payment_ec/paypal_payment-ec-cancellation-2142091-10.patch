@@ -1,0 +1,60 @@
+From ed76d6509aadf93670b8bf149ba2652f37b7e088 Mon Sep 17 00:00:00 2001
+From: morbiD <morbiD@319819.no-reply.drupal.org>
+Date: Thu, 20 Aug 2015 11:53:11 +0100
+Subject: [PATCH] Issue #2142091 by morbiD: Fixed cancelled EC payments being
+ left pending.
+
+---
+ .../PayPalPaymentECPaymentMethodController.inc         |  2 +-
+ paypal_payment_ec/paypal_payment_ec.module             | 18 ++++++++++++++++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/paypal_payment_ec/includes/PayPalPaymentECPaymentMethodController.inc b/paypal_payment_ec/includes/PayPalPaymentECPaymentMethodController.inc
+index f13d457..9624389 100755
+--- a/paypal_payment_ec/includes/PayPalPaymentECPaymentMethodController.inc
++++ b/paypal_payment_ec/includes/PayPalPaymentECPaymentMethodController.inc
+@@ -160,7 +160,7 @@ class PayPalPaymentECPaymentMethodController extends PayPalPaymentNVPAPIPaymentM
+     $nvp_request = array(
+       'METHOD' => 'SetExpressCheckout',
+       'RETURNURL' => $return_url,
+-      'CANCELURL' => $return_url,
++      'CANCELURL' => $return_url . '/cancel',
+       'LOCALECODE' => strtoupper(variable_get('site_default_country', 'US')),
+       'EMAIL' => (!empty($user->mail)) ? $user->mail : '',
+     ) + $this->paymentNVP($payment);
+diff --git a/paypal_payment_ec/paypal_payment_ec.module b/paypal_payment_ec/paypal_payment_ec.module
+index b2bebb3..8644b47 100755
+--- a/paypal_payment_ec/paypal_payment_ec.module
++++ b/paypal_payment_ec/paypal_payment_ec.module
+@@ -15,6 +15,12 @@ function paypal_payment_ec_menu() {
+     'access callback' => 'paypal_payment_ec_return_access',
+     'type' => MENU_CALLBACK,
+   );
++  $items['paypal_payment_ec/return/cancel'] = array(
++    'title' => 'PayPal Express Checkout cancellation url',
++    'page callback' => 'paypal_payment_ec_return_cancel',
++    'access callback' => 'paypal_payment_ec_return_access',
++    'type' => MENU_CALLBACK,
++  );
+ 
+   return $items;
+ }
+@@ -195,3 +201,15 @@ function paypal_payment_ec_return() {
+ function paypal_payment_ec_return_access() {
+   return isset($_GET['token']) && payment_method_controller_load('PayPalPaymentECPaymentMethodController')->loadAuthentication($_GET['token'], 'token');
+ }
++
++/**
++ * Cancellation return callback.
++ */
++function paypal_payment_ec_return_cancel() {
++  $token = $_GET['token'];
++  $controller = payment_method_controller_load('PayPalPaymentECPaymentMethodController');
++  $authentication = $controller->loadAuthentication($token, 'token');
++  $payment = entity_load_single('payment', $authentication->pid);
++  $payment->setStatus(new PaymentStatusItem(PAYMENT_STATUS_CANCELLED));
++  $payment->finish();
++}
+-- 
+2.4.5.windows.1
+
