@@ -160,7 +160,7 @@ class PayPalPaymentECPaymentMethodController extends PayPalPaymentNVPAPIPaymentM
     $nvp_request = array(
       'METHOD' => 'SetExpressCheckout',
       'RETURNURL' => $return_url,
-      'CANCELURL' => $return_url,
+      'CANCELURL' => $return_url . '/cancel',
       'LOCALECODE' => strtoupper(variable_get('site_default_country', 'US')),
       'EMAIL' => (!empty($user->mail)) ? $user->mail : '',
     ) + $this->paymentNVP($payment);

@@ -15,6 +15,12 @@ function paypal_payment_ec_menu() {
     'access callback' => 'paypal_payment_ec_return_access',
     'type' => MENU_CALLBACK,
   );
+  $items['paypal_payment_ec/return/cancel'] = array(
+    'title' => 'PayPal Express Checkout cancellation url',
+    'page callback' => 'paypal_payment_ec_return_cancel',
+    'access callback' => 'paypal_payment_ec_return_access',
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
 }
@@ -194,4 +200,16 @@ function paypal_payment_ec_return() {
  */
 function paypal_payment_ec_return_access() {
   return isset($_GET['token']) && payment_method_controller_load('PayPalPaymentECPaymentMethodController')->loadAuthentication($_GET['token'], 'token');
+}
+
+/**
+ * Cancellation return callback.
+ */
+function paypal_payment_ec_return_cancel() {
+  $token = $_GET['token'];
+  $controller = payment_method_controller_load('PayPalPaymentECPaymentMethodController');
+  $authentication = $controller->loadAuthentication($token, 'token');
+  $payment = entity_load_single('payment', $authentication->pid);
+  $payment->setStatus(new PaymentStatusItem(PAYMENT_STATUS_CANCELLED));
+  $payment->finish();
 }
