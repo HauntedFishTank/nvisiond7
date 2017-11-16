@@ -180,7 +180,7 @@ function template_preprocess_authcache_p13n_fragment(&$variables) {
 
   if (!empty($url)) {
     $variables['theme_hook_suggestions'][] = 'authcache_p13n_fragment__' . $client;
-    $variables['theme_hook_suggestions'][] = 'authcache_p13n_fragment__' . $client . '__' . $fragment;
+    $variables['theme_hook_suggestions'][] = 'authcache_p13n_fragment__' . $client . '__' . preg_replace('/_{2,}/', '_', preg_replace('/[^0-9a-z]/i', '_', $fragment));
 
     $variables['client'] = $client;
     $variables['url'] = $url;
@@ -227,7 +227,7 @@ function template_preprocess_authcache_p13n_setting(&$variables) {
 
   if (!empty($url)) {
     $variables['theme_hook_suggestions'][] = 'authcache_p13n_setting__' . $client;
-    $variables['theme_hook_suggestions'][] = 'authcache_p13n_setting__' . $client . '__' . $setting;
+    $variables['theme_hook_suggestions'][] = 'authcache_p13n_setting__' . $client . '__' . preg_replace('/_{2,}/', '_', preg_replace('/[^0-9a-z]/i', '_', $setting));
 
     $variables['client'] = $client;
     $variables['url'] = $url;
@@ -273,7 +273,7 @@ function template_preprocess_authcache_p13n_assembly(&$variables) {
 
   if (!empty($url)) {
     $variables['theme_hook_suggestions'][] = 'authcache_p13n_assembly__' . $client;
-    $variables['theme_hook_suggestions'][] = 'authcache_p13n_assembly__' . $client . '__' . $assembly;
+    $variables['theme_hook_suggestions'][] = 'authcache_p13n_assembly__' . $client . '__' . preg_replace('/_{2,}/', '_', preg_replace('/[^0-9a-z]/i', '_', $assembly));
 
     $variables['client'] = $client;
     $variables['url'] = $url;
@@ -320,7 +320,7 @@ function template_preprocess_authcache_p13n_partial(&$variables) {
 
   if (!empty($exists)) {
     $variables['theme_hook_suggestions'][] = 'authcache_p13n_partial__' . $client;
-    $variables['theme_hook_suggestions'][] = 'authcache_p13n_partial__' . $client . '__' . $assembly;
+    $variables['theme_hook_suggestions'][] = 'authcache_p13n_partial__' . $client . '__' . preg_replace('/_{2,}/', '_', preg_replace('/[^0-9a-z]/i', '_', $assembly));
 
     $variables['client'] = $client;
     $variables['class'] = drupal_html_class('authcache-p13n-asm-' . $assembly);

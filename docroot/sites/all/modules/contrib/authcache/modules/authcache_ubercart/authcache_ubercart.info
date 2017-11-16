@@ -1,10 +1,10 @@
-name = Authcache Test Stub Backend
-description = Provides a stub cache backend for testing purposes.
-package = Testing
+name = Authcache Ubercart
+description = Authcache support for Ubercart
+package = Performance and scalability
 core = 7.x
-hidden = TRUE
 dependencies[] = authcache
-dependencies[] = authcache_test_hookstub
+dependencies[] = uc_product
+files[] = authcache_ubercart.test
 
 ; Information added by Drupal.org packaging script on 2017-11-15
 version = "7.x-2.2"

@@ -115,6 +115,24 @@ function hook_authcache_precluded($reason) {
 /**
  * Return key property values used to calculate the authcache key.
  *
+ * The Authcache Key is only computed during uncached requests and then stored
+ * in a record associated with a users session. When attempting to retrieve a
+ * page from the cache on subsequent requests, the key is looked up based on the
+ * session id on the incoming request. If there is a cached page associated with
+ * the given key, it is served right away without any further access checks.
+ *
+ * When key properties change during the lifetime of a session, then the
+ * Authcache Key associated with a given session id will only be updated on the
+ * next page cache miss. Also if there is no existing cache entry for a given
+ * URL with the old key, the very next request will immediately lead to a cache
+ * miss. It follows that key properties must not depend on factors other than
+ * the currently logged in user or in some cases characteristics of the users
+ * browser. Otherwise performance of the cache will suffer (i.e., the cache-hit
+ * ratio will degrade).
+ *
+ * @see authcache_builtin_cacheinc_retrieve_cache_page
+ * @see https://www.drupal.org/node/2290611#sub-variation
+ *
  * @return array
  *   An associative array of key-value pairs.
  */

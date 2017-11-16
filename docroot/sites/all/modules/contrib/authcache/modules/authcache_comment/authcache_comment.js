@@ -22,6 +22,9 @@
           if (elem.data('p13n-uid') == settings.authcacheUser.uid) {
             elem.show();
           }
+          else {
+            elem.hide();
+          }
         });
       }
     }

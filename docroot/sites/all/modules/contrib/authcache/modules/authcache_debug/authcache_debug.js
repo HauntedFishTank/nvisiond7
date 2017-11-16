@@ -35,6 +35,17 @@
     updateInfoFieldset();
 
     debugTimer();
+
+    // Add position links.
+    var positions = $('<div>Widget position: <a href="#">top-left</a> <a href="#">top-right</a> <a href="#">bottom-left</a> <a href="#">bottom-right</a></div>');
+    $('a', positions).each(function() {
+      $(this).click(function() {
+        updatePosition($(this).text());
+      });
+    });
+    $("#authcachedebug").append(positions);
+
+    updatePosition();
   }
 
   /**
@@ -98,6 +109,27 @@
 
     $("#authcachedebuginfo").first().html(debugFieldset("Status", status));
     $("#authcachedebuginfo").first().append(debugFieldset("Settings", info));
+  }
+
+  /**
+   * Set widget position to top-left, top-right, bottom-left or bottom-right.
+   */
+  function updatePosition(pos) {
+    var $widget = $("#authcachedbg");
+    var positions = ["top-right", "bottom-left", "bottom-right"];
+
+    if (typeof pos === "undefined") {
+      pos = $.cookie("Drupal.authcache.aucdbg_pos");
+    }
+
+    $widget.removeClass(positions.join(" "));
+    if ($.inArray(pos, positions) !== -1) {
+      $widget.addClass(pos);
+      $.authcache_cookie("Drupal.authcache.aucdbg_pos", pos);
+    }
+    else {
+      $.authcache_cookie("Drupal.authcache.aucdbg_pos", '', -1);
+    }
   }
 
   /**
