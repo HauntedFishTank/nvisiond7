@@ -77,5 +77,11 @@
   <?php print $page_top; ?>
   <?php print $page; ?>
   <?php print $page_bottom; ?>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-9512999-12"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+  ga("create", "UA-9512999-12", {"cookieDomain":"auto","allowLinker":true}, "clientTracker");
+//--><!]]>
+</script>
 </body>
 </html>
