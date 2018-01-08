@@ -233,9 +233,11 @@ class PayPalPaymentECPaymentMethodController extends PayPalPaymentNVPAPIPaymentM
    * @return array
    */
   public function paymentNVP(Payment $payment) {
+    $currency = currency_load($payment->currency_code);
+    $amount = $currency->roundAmount($payment->totalAmount(TRUE));
     return array(
       'PAYMENTREQUEST_0_CURRENCYCODE' => $payment->currency_code,
-      'PAYMENTREQUEST_0_AMT' => $payment->totalAmount(TRUE),
+      'PAYMENTREQUEST_0_AMT' => $amount,
       'PAYMENTREQUEST_0_PAYMENTACTION' => $payment->method->controller_data['capture'],
       'PAYMENTREQUEST_0_DESC' => $payment->description,
       'PAYMENTREQUEST_0_INVNUM' => PayPalPaymentIPNController::invoiceID($payment->pid),
@@ -342,7 +344,7 @@ class PayPalPaymentECPaymentMethodController extends PayPalPaymentNVPAPIPaymentM
       else {
         $status_map = $this->statusMap();
         return isset($status_map[$paypal_status]) ? $status_map[$paypal_status] : PAYMENT_STATUS_UNKNOWN;
-      } 
+      }
     }
     return PAYMENT_STATUS_UNKNOWN;
   }

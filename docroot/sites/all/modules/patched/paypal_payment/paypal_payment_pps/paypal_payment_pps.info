@@ -1,6 +1,7 @@
 name = PayPal Payments Standard
 description = Provides a <a href="https://www.paypal.com/webapps/mpp/paypal-payments-standard">PayPal Payments Standard</a> payment method type.
 package = Payment
+dependencies[] = currency (>=7.x-2.1)
 dependencies[] = paypal_payment
 dependencies[] = paypal_payment_ipn
 core = 7.x
