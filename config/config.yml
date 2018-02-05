@@ -1,5 +1,5 @@
 # Update the hostname to the local development environment hostname.
-vagrant_hostname: nvision.dev
+vagrant_hostname: nvision.test
 vagrant_machine_name: nvision
 
 # Set the IP address so it doesn't conflict with other Drupal VM instances.
