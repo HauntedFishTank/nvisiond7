@@ -211,6 +211,9 @@ function commerce_payment_credit_card_validate($details, $settings) {
   $prefix = implode('][', $settings['form_parents']) . '][';
   $valid = TRUE;
 
+  // Strip any spaces that may exist in the submitted number.
+  $details['number'] = str_replace(' ', '', $details['number']);
+
   // Validate the credit card type.
   if (!empty($details['valid_types'])) {
     $type = commerce_payment_validate_credit_card_type($details['number'], $details['valid_types']);
