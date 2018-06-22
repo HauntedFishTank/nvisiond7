@@ -1,0 +1,12 @@
+name = Site Status Message
+description = Provides a configurable message to display on the top of your site
+package = Site Status Message
+core = 7.x
+configure = admin/config/system/site-status-message
+files[] = tests/site_status_message.test
+
+; Information added by Drupal.org packaging script on 2018-05-02
+version = "7.x-1.1+5-dev"
+core = "7.x"
+project = "site_status_message"
+datestamp = "1525271886"

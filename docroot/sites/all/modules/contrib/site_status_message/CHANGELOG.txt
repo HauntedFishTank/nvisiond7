@@ -1,0 +1,4 @@
+
+Site Status Message 7.x-1.x, 2017-07-27
+---------------------------------------
+by DrupalGideon: Added tests and minor updates.

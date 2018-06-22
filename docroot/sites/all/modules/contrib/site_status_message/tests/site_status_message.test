@@ -1,0 +1,256 @@
+<?php
+/**
+ * @file
+ * Tests for Site Status Message module.
+ *
+ * @author: Gideon Cresswell (DrupalGideon)
+ *          <https://www.drupal.org/u/drupalgideon>
+ */
+
+/**
+ * Class SiteStatusMessageTestCase.
+ */
+class SiteStatusMessageTestCase extends DrupalWebTestCase {
+
+  /**
+   * Permissions for Site Status Message.
+   *
+   * @var array
+   */
+  private $basePermissions = array(
+    'system'                    => 'access administration pages',
+    'site_status_message_admin' => 'administer site status message',
+  );
+
+  /**
+   * Path to the Site Status Message administration page.
+   *
+   * @var string
+   */
+  private $siteStatusMessageAdminPage = 'admin/config/system/site-status-message';
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name'        => 'Site Status Message module functionality',
+      'description' => 'Tests hooks for Site Status Message module',
+      'group'       => 'Site Status Message',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    parent::setUp('site_status_message');
+  }
+
+  /**
+   * Test Site Status Message permissions.
+   */
+  public function testPermission() {
+    // Ensure permissions set in module are enabled.
+    $data = module_invoke('site_status_message', 'permission');
+
+    // Run checks on the permissions.
+    $this->assertTrue(is_array($data), 'Permission hook returns array.');
+    $this->assertEqual(1, count($data), 'Permission array has only one item.');
+    $this->assertTrue(array_key_exists('administer site status message', $data), 'Site Status Message Admin Permission is as expected.');
+  }
+
+  /**
+   * Test Site Status Message menu items.
+   */
+  public function testMenu() {
+    // Ensure menu items set in module are enabled.
+    $items = module_invoke('site_status_message', 'menu');
+
+    // Run checks on the menu items.
+    $this->assertTrue(is_array($items), 'Menu hook returns array.');
+    $this->assertEqual(1, count($items), 'Menu array defines only one item.');
+  }
+
+  /**
+   * Tests for the Site Status Message admin page.
+   */
+  public function testSiteStatusMessageAdminPage() {
+    // Create an Admin user.
+    $permissions = $this->basePermissions;
+    $admin_user = $this->drupalCreateUser($permissions);
+    $this->drupalLogin($admin_user);
+
+    // Check the admin page can be accessed by our new user.
+    $this->drupalGet($this->siteStatusMessageAdminPage);
+    $this->assertResponse(200, 'Ensure a 200 code is returned.');
+    $this->assertText(t('Site Status Message'), 'Check the admin page title is set to Site Status Message for Admin user.');
+
+    // Check the Message field is on the page.
+    $this->assertFieldById('edit-site-status-message-message', '', 'Check the message field is on the admin page.');
+    // Check the Show Link field is on the page.
+    $this->assertFieldById('edit-site-status-message-showlink', '', 'Check the show link field is on the admin page.');
+    // Check the Link field is on the page.
+    $this->assertFieldById('edit-site-status-message-link', '', 'Check the link field is on the admin page.');
+    // Check the Read More field is on the page.
+    $this->assertFieldById('edit-site-status-message-readmore', '', 'Check the Read More field is on the admin page.');
+    // Check the Display Options fields are on the page.
+    $this->assertFieldById('edit-site-status-message-display-options-off', '', 'Check the Display Options "Off" option field is on the admin page.');
+    $this->assertFieldById('edit-site-status-message-display-options-public', '', 'Check the Display Options "Public-facing" option field is on the admin page.');
+    $this->assertFieldById('edit-site-status-message-display-options-admin', '', 'Check the Display Options "Admin" option field is on the admin page.');
+    $this->assertFieldById('edit-site-status-message-display-options-both', '', 'Check the Display Options "Both" option field is on the admin page.');
+
+    // Check the page cannot be accessed by anonymous user.
+    $this->drupalLogout();
+    $this->drupalGet($this->siteStatusMessageAdminPage);
+    $this->assertText(t('Access denied'), 'Check that anonymous user gets an Access Denied message for the admin page.');
+    $this->assertResponse(403, 'Ensure a 403 Forbidden error is returned.');
+  }
+
+  /**
+   * Tests for the Site Status Message theme.
+   */
+  public function testTheme() {
+    // Ensure the theme function is correctly loaded.
+    $items = module_invoke('site_status_message', 'theme', array(), 'module', '', '');
+
+    // Run tests on the theme.
+    $this->assertTrue(is_array($items), 'Theme hook returns an array.');
+    $this->assertEqual(1, count($items), 'Only one theme functions defined.');
+    $this->assertTrue(array_key_exists('site_status_message', $items), 'Site Status Message Theme function is as expected.');
+  }
+
+  /**
+   * Tests for Site Status Message module whether message renders correctly.
+   */
+  public function testSiteStatusMessageRender() {
+    // Create an Admin user.
+    $permissions = $this->basePermissions;
+    $admin_user = $this->drupalCreateUser($permissions);
+    $this->drupalLogin($admin_user);
+
+    // Create a dummy Article node.
+    $node = $this->drupalCreateNode(array('type' => 'article'));
+
+    // Message variables.
+    $message = 'This is a test message.';
+    $no_message = '';
+
+    // Path variables.
+    $valid_link = 'node';
+    $invalid_link = 'invalid-page';
+
+    $edit = array(
+      'site_status_message_message'         => $message,
+      'site_status_message_showlink'        => FALSE,
+      'site_status_message_link'            => $valid_link,
+      'site_status_message_readmore'        => 'Click here',
+      'site_status_message_display_options' => 'off',
+    );
+
+    // Test 1. Valid message set, show more link off, valid link, valid link
+    // text, display message off.
+    $this->drupalPost($this->siteStatusMessageAdminPage, $edit, 'Save configuration');
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertNoRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div does not appear on the page.');
+    $this->assertNoText(t('This is a test message.'), 'Check that Site Status Message text is not showing on the page.');
+    $this->assertNoLink('Click here', 'Check the Site Status Message link is not on the page.');
+    // Change to Admin page.
+    $this->drupalGet($this->siteStatusMessageAdminPage);
+    $this->assertNoRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div does not appear on the page.');
+    $this->assertNoText(t('This is a test message.'), 'Check that Site Status Message text is not showing on the page.');
+    $this->assertNoLink('Click here', 'Check the Site Status Message link is not on the page.');
+
+    // Test 2. Valid message set, show more link off, valid link, valid link
+    // text, display message set to public-facing.
+    $edit['site_status_message_display_options'] = 'public';
+    $this->drupalPost($this->siteStatusMessageAdminPage, $edit, 'Save configuration');
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div appears on the page.');
+    $this->assertText(t('This is a test message.'), 'Check that Site Status Message text is showing on a content page.');
+    $this->assertNoLink('Click here', 'Check the Site Status Message link is not on the content page.');
+    // Change to Admin page.
+    $this->drupalGet($this->siteStatusMessageAdminPage);
+    $this->assertNoRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div does not appear on the page.');
+    $this->assertNoText(t('This is a test message.'), 'Check that Site Status Message text is not showing on the page.');
+    $this->assertNoLink('Click here', 'Check the Site Status Message link is not on the page.');
+
+    // Test 3. Valid message set, show more link on, valid link, valid link
+    // text, display message set to public-facing.
+    $edit['site_status_message_showlink'] = TRUE;
+    $this->drupalPost($this->siteStatusMessageAdminPage, $edit, 'Save configuration');
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div appears on the page.');
+    $this->assertText(t('This is a test message.'), 'Check that Site Status Message text is showing on a content page.');
+    $this->assertLink('Click here', 0, 'Check the Site Status Message link is on the content page.');
+    $this->clickLink('Click here');
+    $this->assertResponse(200, 'Check the Site Status Message link path returns a 200 code.');
+    $this->drupalGet($this->siteStatusMessageAdminPage);
+    $this->assertNoText(t('This is a test message.'), 'Check that Site Status Message text is not showing on a admin page.');
+    $this->assertNoRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div does not appear on the admin page.');
+    $this->assertNoLink('Click here', 'Check the Site Status Message link is not on the admin page.');
+
+    // Test 4. Valid message set, show more link on, valid link, valid link
+    // text, display message set to admin only.
+    $edit['site_status_message_display_options'] = 'admin';
+    $this->drupalPost($this->siteStatusMessageAdminPage, $edit, 'Save configuration');
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertNoRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div does not appear on the page.');
+    $this->assertNoText(t('This is a test message.'), 'Check that Site Status Message text is not showing on the page.');
+    $this->assertNoLink('Click here', 'Check the Site Status Message link is not on the page.');
+    $this->drupalGet($this->siteStatusMessageAdminPage);
+    $this->assertText(t('This is a test message.'), 'Check that Site Status Message text is showing on a admin page.');
+    $this->assertLink('Click here', 0, 'Check the Site Status Message link is on the admin page.');
+    $this->clickLink('Click here');
+    $this->assertResponse(200, 'Check the Site Status Message link path returns a 200 code.');
+
+    // Test 5. Valid message set, show more link on, valid link, valid link
+    // text, display message set to both admin and public-facing pages.
+    $edit['site_status_message_display_options'] = 'both';
+    $this->drupalPost($this->siteStatusMessageAdminPage, $edit, 'Save configuration');
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div appears on the page.');
+    $this->assertText(t('This is a test message.'), 'Check that Site Status Message text is showing on a content page.');
+    $this->assertLink('Click here', 0, 'Check the Site Status Message link is on the content page.');
+    $this->clickLink('Click here');
+    $this->assertResponse(200, 'Check the Site Status Message link path returns a 200 code.');
+    $this->drupalGet($this->siteStatusMessageAdminPage);
+    $this->assertText(t('This is a test message.'), 'Check that Site Status Message text is showing on a admin page.');
+    $this->assertLink('Click here', 0, 'Check the Site Status Message link is on the admin page.');
+    $this->clickLink('Click here');
+    $this->assertResponse(200, 'Check the Site Status Message link path returns a 200 code.');
+
+    // Test 6. Set the message to blank.
+    $edit['site_status_message_message'] = $no_message;
+    $this->drupalPost($this->siteStatusMessageAdminPage, $edit, 'Save configuration');
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertNoText(t('This is a test message.'), 'Check that Site Status Message text is not showing on a content page.');
+    $this->assertNoRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div does not appear on the content page.');
+    $this->assertNoLink('Click here', 'Check the Site Status Message link is not on the content page.');
+    $this->drupalGet($this->siteStatusMessageAdminPage);
+    $this->assertNoText(t('This is a test message.'), 'Check that Site Status Message text is not showing on a content page.');
+    $this->assertNoRaw('<div id="site-status" class="site-status-message">', 'Check the Site Status Message html div does not appear on the content page.');
+    $this->assertNoLink('Click here', 'Check the Site Status Message link is not on the content page.');
+
+    // Test 7. Reset message and set link to an invalid page.
+    $edit['site_status_message_message'] = $message;
+    $edit['site_status_message_link'] = $invalid_link;
+    $this->drupalPost($this->siteStatusMessageAdminPage, $edit, 'Save configuration');
+    $this->assertText(t('You must enter a valid internal path.'), 'Check that Site Status Message link error is showing the admin page.');
+  }
+
+  /**
+   * Unit test for the message display options.
+   *
+   * @return void
+   */
+  public function testSiteStatusMessageDisplayOptions() {
+    $options = _site_status_message_get_display_options();
+
+    $this->assertEqual(count($options), 4, 'Four options defined as display options.');
+    $this->assertTrue(isset($options['off']), 'Off option exists in array.');
+    $this->assertTrue(isset($options['public']), 'Public-facing option exists in array.');
+    $this->assertTrue(isset($options['admin']), 'Admin option exists in array.');
+    $this->assertTrue(isset($options['both']), 'Both option exists in array.');
+  }
+}

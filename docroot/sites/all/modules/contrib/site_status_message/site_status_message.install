@@ -1,0 +1,36 @@
+<?php
+/**
+ * @file
+ * Install file for Site Status Message.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function site_status_message_uninstall() {
+  // Remove Site Status Message variables.
+  variable_del('site_status_message_message');
+  variable_del('site_status_message_link');
+  variable_del('site_status_message_readmore');
+  variable_del('site_status_message_display_options');
+}
+
+/**
+ * Convert legacy variable to "display options" variable.
+ *
+ * As of version 7.x-1.2, the "Show on Admin pages" option has been replaced
+ * by allowing the administrator to choose whether to show the message on
+ * the website pages, the admin pages or both. This will allow for content
+ * editor only messages such as if a new version of the site is due to deployed
+ * on a particular date/time - something that may affect content editors rather
+ * than the public facing site.
+ */
+function site_status_message_update_7000(&$sandbox) {
+  $legacy = variable_get('site_status_message_admin', '');
+
+  if ($legacy) {
+    variable_set('site_status_message_display_options', 'both');
+  }
+
+  variable_del('site_status_message_admin');
+}

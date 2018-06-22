@@ -1,0 +1,236 @@
+<?php
+/**
+ * @file
+ * Site Status Message External Link.
+ *   Allows Site Status Message module to use external links rather than
+ *   internal.
+ *
+ * @author: Gideon Cresswell (DrupalGideon)
+ *          <https://www.drupal.org/u/drupalgideon>
+ */
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function site_status_message_external_link_form_site_status_message_settings_alter(&$form, &$form_state, $form_id) {
+  // Add option to select an external link.
+  $form['site_status']['site_status_message_use_external_link'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Use external link'),
+    '#default_value' => variable_get('site_status_message_use_external_link', ''),
+    '#description'   => t('Use external rather than internal link.'),
+    '#weight'        => 11,
+    '#states'        => array(
+      'visible' => array(
+        ':input[name="site_status_message_showlink"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
+  // Provide text field for external link.
+  $form['site_status']['site_status_message_external_link'] = array(
+    '#type'             => 'textfield',
+    '#size'             => 40,
+    '#maxlength'        => 256,
+    '#title'            => t('More information page'),
+    '#default_value'    => variable_get('site_status_message_external_link', NULL),
+    '#description'      => t('An optional external link to show more information about the status message. Include http:// or https:// in the link.'),
+    '#weight'           => 21,
+    '#element_validate' => array('_site_status_message_external_link_link_validate'),
+    '#states'           => array(
+      'visible' => array(
+        ':input[name="site_status_message_showlink"]'          => array('checked' => TRUE),
+        ':input[name="site_status_message_use_external_link"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
+  // Update the visibilty state for the internal link so it will not show
+  $form['site_status']['site_status_message_link']['#states']['visible'][':input[name="site_status_message_use_external_link"]'] = array('checked' => FALSE);
+
+  // Provide external link attributes.
+  $form['site_status']['site_status_message_external_link_attributes'] = array(
+    '#type'                                       => 'fieldset',
+    '#title'                                      => 'External link attributes',
+    '#weight'                                     => 22,
+    '#states'                                     => array(
+      'visible' => array(
+        ':input[name="site_status_message_showlink"]'          => array('checked' => TRUE),
+        ':input[name="site_status_message_use_external_link"]' => array('checked' => TRUE),
+      ),
+    ),
+    'site_status_message_external_link_new_tab'   => array(
+      '#type'          => 'checkbox',
+      '#title'         => t('Open link in a new browser tab.'),
+      '#default_value' => variable_get('site_status_message_external_link_new_tab', ''),
+      '#weight'        => 25,
+    ),
+    'site_status_message_external_link_no_follow' => array(
+      '#type'          => 'checkbox',
+      '#title'         => t('Use %nofollow attribute.', array('%nofollow' => 'rel="nofollow"')),
+      '#default_value' => variable_get('site_status_message_external_link_no_follow', ''),
+      '#weight'        => 28,
+    ),
+  );
+
+  $form['#after_build'][] = '_site_status_message_external_link_after_build';
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ *
+ * Preprocess function for the theme template.
+ */
+function site_status_message_external_link_preprocess_site_status_message(&$variables) {
+  if (variable_get('site_status_message_showlink', '') && variable_get('site_status_message_use_external_link', '')) {
+    $path = variable_get('site_status_message_external_link', NULL);
+
+    // Only show the link if the external URL is valid.
+    // Not sure if I like the cURL request every page, however.
+    if (_site_status_message_external_link_is_url_valid($path)) {
+      $readmore = filter_xss(variable_get('site_status_message_readmore', 'Read more'));
+      $attributes = array();
+
+      // Check if link needs to be opened in a new browser tab.
+      if (variable_get('site_status_message_external_link_new_tab', '')) {
+        $attributes['target'] = array(
+          '_blank',
+        );
+        // Newly opened tab can change the window.opener.location so adding
+        // these additional attributes should prevent this.
+        $attributes['rel'] = array(
+          'noopener',
+          'noreferrer',
+        );
+      }
+
+      // Check for nofollow attribute.
+      if (variable_get('site_status_message_external_link_no_follow', '')) {
+        $attributes['rel'][] = 'nofollow';
+      }
+
+      $variables['link'] = l($readmore, $path, array('attributes' => $attributes));
+    }
+  }
+
+}
+
+/**
+ * Implements hook_variable_info().
+ */
+function site_status_message_external_link_variable_info($options) {
+  $variable['site_status_message_showlink'] = array(
+    'title'       => t('Use external link', array(), $options),
+    'description' => t('Use external rather than internal link.', array(), $options),
+    'localize'    => TRUE,
+    'group'       => 'site_status_message',
+    'type'        => 'string',
+  );
+
+  return $variable;
+}
+
+/**
+ *
+ * Remove internal link validation if external link is being used.
+ *
+ * Callback for #after_build.
+ *
+ * @param $form
+ * @param $form_state
+ *
+ * @return array
+ */
+function _site_status_message_external_link_after_build($form, &$form_state) {
+  $use_link = $form_state['values']['site_status_message_use_external_link'];
+
+  // Only remove the validation if the 'use external link' checkbox is selected.
+  if ($use_link) {
+    $element_validate = $form['site_status']['site_status_message_link']['#element_validate'];
+    $key = array_search('_site_status_message_link_validate', $element_validate);
+    unset($form['site_status']['site_status_message_link']['#element_validate'][$key]);
+  }
+
+  return $form;
+}
+
+/**
+ * Validation callback for the Site Status Message External Link link field.
+ *
+ * Callback for #element_validate.
+ *
+ * @param $element
+ * @param $form_state
+ *
+ * @return void
+ */
+function _site_status_message_external_link_link_validate($element, &$form_state) {
+  $use_link = $form_state['values']['site_status_message_use_external_link'];
+  $link = $form_state['values']['site_status_message_external_link'];
+
+  if ($use_link && !_site_status_message_external_link_is_url_valid($link)) {
+    form_error($element, t('You must enter a valid external path.'));
+  }
+}
+
+/**
+ * Check whether the external URL provided is a valid link.
+ *
+ * @param $link
+ *
+ * @return bool
+ */
+function _site_status_message_external_link_is_url_valid($link) {
+  $schema = parse_url($link, PHP_URL_SCHEME);
+
+  // If the schema isn't provided, return error before trying curl request.
+  if (!in_array($schema, _site_status_message_external_link_valid_schemas())) {
+    return FALSE;
+  }
+
+  // Simpler than drupal_http_request().
+  $ch = curl_init($link);
+  curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+  curl_exec($ch);
+  $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+
+  return _site_status_message_external_link_is_valid_http_code($http_code);
+}
+
+/**
+ * List of all valid schemas.
+ *
+ * @return array
+ */
+function _site_status_message_external_link_valid_schemas() {
+  return array(
+    'http',
+    'https',
+  );
+}
+
+/**
+ * List of all valid http response codes.
+ *
+ * @return array
+ */
+function _site_status_message_external_link_valid_http_codes() {
+  // Allow redirects as well as the 200 response code only.
+  return array(
+    200,
+    301,
+    302,
+  );
+}
+
+/**
+ * Check if the provided http code is in the allowed list.
+ *
+ * @param $http_code
+ *
+ * @return bool
+ */
+function _site_status_message_external_link_is_valid_http_code($http_code) {
+  return in_array($http_code, _site_status_message_external_link_valid_http_codes());
+}

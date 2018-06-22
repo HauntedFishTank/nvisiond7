@@ -1,0 +1,283 @@
+<?php
+/**
+ * @file
+ * Site Status Message provides a configurable page top message.
+ *
+ * @author: Gideon Cresswell (DrupalGideon)
+ *          <https://www.drupal.org/u/drupalgideon>
+ */
+
+/**
+ * Implements hook_help().
+ */
+function site_status_message_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#site_status_message':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Site Status Message is a simple module to display a site wide message to your users at the top of each page. Use cases could be to inform of known downtime in the future, to advertise a special offer on the site or some important news that needs highlighting.') . '</p>';
+      $output .= '<p>' . t('An optional link to a page with more information can be displayed after the message.') . '</p>';
+      $output .= '<p>' . t('The settings for this module can be configured on the <a href="@url">Site Information</a> page.', array('@url' => '/admin/config/system/site-information#edit-site-status')) . '</p>';
+
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function site_status_message_permission() {
+  return array(
+    'administer site status message' => array(
+      'title'       => t('Administer Site Status Message'),
+      'description' => t('Access the Site Status Message administration pages.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_page_menu().
+ */
+function site_status_message_menu() {
+  $items = array();
+  $items['admin/config/system/site-status-message'] = array(
+    'title'            => 'Site Status Message',
+    'description'      => 'Configure settings for the Site Status Message.',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('site_status_message_settings'),
+    'access arguments' => array('administer site status message'),
+    'type'             => MENU_NORMAL_ITEM,
+    'weight'           => 50,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_page_build().
+ */
+function site_status_message_page_build(&$page) {
+  $site_status_message = trim(variable_get('site_status_message_message', NULL));
+
+  // If the message is blank, do not display.
+  if ($site_status_message) {
+    $page_option = variable_get('site_status_message_display_options', 'off');
+    $admin_page = path_is_admin(current_path());
+
+    // Check if the message should be displayed at all for this path.
+    if (($page_option === 'off') || ($page_option === 'public' && $admin_page) || ($page_option === 'admin' && !$admin_page)) {
+      return;
+    }
+
+    $variables = array();
+    $variables['message'] = $site_status_message;
+    $variables['link'] = variable_get('site_status_message_link', NULL);
+
+    $page['page_top']['site_status_message'] = array(
+      '#type'     => 'markup',
+      '#markup'   => theme('site_status_message', $variables),
+      '#attached' => array(
+        'css' => array(
+          drupal_get_path('module', 'site_status_message') . '/css/site_status_message.css',
+        ),
+      ),
+      '#access'   => user_access('access content'),
+    );
+  }
+}
+
+/**
+ * Site Status Message settings configuration form.
+ */
+function site_status_message_settings($form, &$form_state) {
+  $form['site_status'] = array(
+    '#type'                        => 'fieldset',
+    '#title'                       => 'Site Status Message',
+    'site_status_message_message'  => array(
+      '#type'          => 'textfield',
+      '#maxlength'     => 256,
+      '#title'         => t('Status message'),
+      '#default_value' => variable_get('site_status_message_message', NULL),
+      '#description'   => t('A message to display at the top of each page.'),
+      '#weight'        => 0,
+    ),
+    'site_status_message_showlink' => array(
+      '#type'          => 'checkbox',
+      '#title'         => t('Read more page'),
+      '#default_value' => variable_get('site_status_message_showlink', ''),
+      '#description'   => t('Optional "Read More" link to provide the viewer with more information.'),
+      '#weight'        => 10,
+    ),
+    'site_status_message_link'     => array(
+      '#type'             => 'textfield',
+      '#size'             => 40,
+      '#maxlength'        => 256,
+      '#title'            => t('More information page'),
+      '#default_value'    => variable_get('site_status_message_link', NULL) ? drupal_get_path_alias(variable_get('site_status_message_link', NULL)) : NULL,
+      '#description'      => t('An optional internal link to show more information about the status message.'),
+      '#field_prefix'     => url(NULL, array('absolute' => TRUE)),
+      '#weight'           => 20,
+      '#element_validate' => array('_site_status_message_link_validate'),
+      '#states'           => array(
+        'visible' => array(
+          ':input[name="site_status_message_showlink"]' => array('checked' => TRUE),
+        ),
+      ),
+    ),
+    'site_status_message_readmore' => array(
+      '#type'          => 'textfield',
+      '#size'          => 40,
+      '#maxlength'     => 128,
+      '#title'         => t('More information link text'),
+      '#default_value' => variable_get('site_status_message_readmore', 'Read more'),
+      '#description'   => t('The text to display on the "More Information" link.'),
+      '#weight'        => 30,
+      '#states'        => array(
+        'visible' => array(
+          ':input[name="site_status_message_showlink"]' => array('checked' => TRUE),
+        ),
+      ),
+    ),
+  );
+
+  $form['display'] = array(
+    '#type'                               => 'fieldset',
+    '#title'                              => t('Display options'),
+    'site_status_message_display_options' => array(
+      '#type'          => 'radios',
+      '#title'         => t('Where on the site should the message be displayed'),
+      '#options'       => _site_status_message_get_display_options(),
+      '#default_value' => variable_get('site_status_message_display_options', 'public'),
+    ),
+    '#weight'                             => 40,
+  );
+
+  //$form['#validate'][] = 'site_status_message_form_validate';
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function site_status_message_theme($existing, $type, $theme, $path) {
+  return array(
+    'site_status_message' => array(
+      'arguments' => array(
+        'message' => NULL,
+        'link'    => NULL,
+      ),
+      'template'  => 'site-status-message',
+      'path'      => drupal_get_path('module', 'site_status_message') . '/template',
+    ),
+  );
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ *
+ * Preprocess function for the theme template.
+ */
+function site_status_message_preprocess_site_status_message(&$variables) {
+  $path = drupal_get_normal_path($variables['link']);
+
+  if (variable_get('site_status_message_showlink', '') && drupal_valid_path($path)) {
+    $readmore = filter_xss(variable_get('site_status_message_readmore', 'Read more'));
+    $variables['link'] = l($readmore, $path);
+  }
+  else {
+    $variables['link'] = NULL;
+  }
+
+  $variables['message'] = filter_xss($variables['message']);
+}
+
+/**
+ * Implements hook_variable_group_info().
+ */
+function site_status_message_variable_group_info() {
+  $groups['site_status_message'] = array(
+    'title'       => t('Site status message'),
+    'description' => t('Site status message'),
+    'access'      => 'administer site configuration',
+    'path'        => array('admin/config/system/site-status-message'),
+  );
+
+  return $groups;
+}
+
+/**
+ * Implements hook_variable_info().
+ */
+function site_status_message_variable_info($options) {
+  $variable['site_status_message_message'] = array(
+    'title'       => t('Status message', array(), $options),
+    'description' => t('A message to display at the top of each page.', array(), $options),
+    'localize'    => TRUE,
+    'group'       => 'site_status_message',
+    'type'        => 'string',
+  );
+  $variable['site_status_message_showlink'] = array(
+    'title'       => t('Read more page', array(), $options),
+    'description' => t('Optional "Read More" link to provide the viewer with more information.', array(), $options),
+    'localize'    => TRUE,
+    'group'       => 'site_status_message',
+    'type'        => 'string',
+  );
+  $variable['site_status_message_link'] = array(
+    'title'       => t('More information page', array(), $options),
+    'description' => t('An optional link to show more information about the status message.', array(), $options),
+    'localize'    => TRUE,
+    'group'       => 'site_status_message',
+    'type'        => 'drupal_path',
+  );
+  $variable['site_status_message_readmore'] = array(
+    'title'       => t('More information link', array(), $options),
+    'description' => t('The text to display on the "More Information" link.', array(), $options),
+    'localize'    => TRUE,
+    'group'       => 'site_status_message',
+    'type'        => 'string',
+  );
+  $variable['site_status_message_display_options'] = array(
+    'title'    => t('Where on the site should the message be displayed', array(), $options),
+    'localize' => TRUE,
+    'group'    => 'site_status_message',
+    'type'     => 'select',
+    'options'  => _site_status_message_get_display_options(),
+  );
+
+  return $variable;
+}
+
+/**
+ * Validation callback for the Site Status Message link field.
+ *
+ * Callback for #element_validate.
+ *
+ * @param $element
+ * @param $form_state
+ *
+ * @return void
+ */
+function _site_status_message_link_validate($element, &$form_state) {
+  // Validate that the More Information page exists.
+  $link = $form_state['values']['site_status_message_link'];
+
+  if (!empty($link) && !drupal_valid_path(drupal_get_normal_path($link))) {
+    form_error($element, t('You must enter a valid internal path.'));
+  }
+}
+
+/**
+ * Helper function to return an array of options for which pages the message
+ * can display on.
+ *
+ * @return array
+ */
+function _site_status_message_get_display_options() {
+  return array(
+    'off'    => t('Turn off'),
+    'public' => t('Public-facing site pages'),
+    'admin'  => t('Admin pages'),
+    'both'   => t('Both public-facing site and admin pages'),
+  );
+}
