@@ -6773,6 +6773,16 @@ html.js .autocomplete-throbber.throbbing {
 body {
   position: relative;
 }
+body #site-status {
+  background-color: #000;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+body #site-status a {
+  padding-left: 1em;
+  color: #ac7c1b;
+}
 body.admin-expanded.admin-vertical.admin-nw .navbar,
 body.admin-expanded.admin-vertical.admin-sw .navbar {
   margin-left: 260px;

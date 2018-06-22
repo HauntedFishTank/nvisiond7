@@ -105,6 +105,13 @@ function nvision_bootstrap_preprocess_html(&$variables) {
   if (drupal_get_path_alias() === 'women') {
     $variables['body_attributes_array']['class'][] = 'women';
   }
+
+  if (isset($variables['page']['page_top']['site_status_message'])) {
+    // Don't render the message in the HTML! It gets rendered in page.tpl.php.
+    unset($variables['page']['page_top']['site_status_message']);
+    $variables['body_attributes_array']['class'][] = 'site-status-message';
+  }
+
 }
 
 /**
