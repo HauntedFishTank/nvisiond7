@@ -7840,12 +7840,6 @@ a:focus {
   font-weight: 300;
   margin-bottom: 30px;
 }
-h1.page-header::first-letter {
-  font-size: 46px;
-}
-.nvision::first-letter {
-  font-size: 110%;
-}
 .node-type-product .product-teaser-title,
 .node-type-page .product-teaser-title,
 .node-type-basic-page .product-teaser-title,
@@ -7957,9 +7951,6 @@ h1.page-header::first-letter {
   letter-spacing: 10px;
   color: #805c14;
   text-shadow: -1px -1px 1px #ffffff, 1px 1px 1px #000000;
-}
-.women .page-header::first-letter {
-  font-size: 60px;
 }
 .women .node-basic-page p {
   font-family: "Times New Roman", Georgia, Times, serif;
