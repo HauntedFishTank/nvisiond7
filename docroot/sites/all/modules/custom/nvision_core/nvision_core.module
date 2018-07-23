@@ -148,12 +148,14 @@ function _nvision_core_get_cart_quantity() {
 
     $quantity = 0;
 
+    /** @var stdClass $wrapper */
     foreach ($wrapper->commerce_line_items as $line_item) {
       if (!$line_item instanceof EntityMetadataWrapper) {
         $line_item = entity_metadata_wrapper('commerce_line_item', $line_item);
       }
       $types = commerce_popup_cart_selected_line_items();
 
+      /** @var stdClass $line_item */
       if (in_array($line_item->type->value(), $types)) {
         $quantity += $line_item->quantity->value();
       }
