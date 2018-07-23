@@ -51,7 +51,7 @@ class DrupalRequestSanitizer {
     }
   }
 
-   /**
+  /**
    * Removes the destination if it is dangerous.
    *
    * Note this can only be called after common.inc has been included.

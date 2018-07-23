@@ -613,7 +613,7 @@ function drupal_parse_url($url) {
   // disabled. It overrides the 'path' of the URL when present, even if clean
   // URLs are enabled, due to how Apache rewriting rules work. The path
   // parameter must be a string.
-  if (isset($options['query']['q']) && is_string($options['query']['q'])) {  
+  if (isset($options['query']['q']) && is_string($options['query']['q'])) {
     $options['path'] = $options['query']['q'];
     unset($options['query']['q']);
   }
@@ -2237,8 +2237,11 @@ function url($path = NULL, array $options = array()) {
     'prefix' => ''
   );
 
+  // Determine whether this is an external link, but ensure that the current
+  // path is always treated as internal by default (to prevent external link
+  // injection vulnerabilities).
   if (!isset($options['external'])) {
-    $options['external'] = url_is_external($path);
+    $options['external'] = $path === $_GET['q'] ? FALSE : url_is_external($path);
   }
 
   // Preserve the original path before altering or aliasing.
