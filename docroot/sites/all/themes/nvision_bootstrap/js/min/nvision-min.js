@@ -1,1 +1,1 @@
-!function($){"use strict";$("body.site-status-message #hero-carousel").css({"padding-top":$("#site-status").height()})}(jQuery);
+!function($){Drupal.behaviors.nvision={attach:function(s,a){var e=$("#navbar").height()-46;$("body.site-status-message #hero-carousel").css({"padding-top":e+"px"}),$(window).resize(function(){var s=$("#navbar").height()-46;$("body.site-status-message #hero-carousel").css({"padding-top":s+"px"})})}}}(jQuery);

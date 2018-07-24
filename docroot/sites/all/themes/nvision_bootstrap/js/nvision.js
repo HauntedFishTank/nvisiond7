@@ -1,6 +1,17 @@
 (function($) {
-  'use strict';
+  Drupal.behaviors.nvision = {
+    attach: function (context, settings) {
+      // Run First
+      var newHeight = ($('#navbar').height() - 46);
+      $('body.site-status-message #hero-carousel').css({"padding-top": newHeight + 'px'});
 
-  $("body.site-status-message #hero-carousel").css({"padding-top": $("#site-status").height() });
+      // Run on resize
+      $(window).resize(function() {
+        var newHeight = ($('#navbar').height() - 46);
+        $('body.site-status-message #hero-carousel').css({"padding-top": newHeight + 'px'});
+      });
 
+    }
+
+  };
 })(jQuery);

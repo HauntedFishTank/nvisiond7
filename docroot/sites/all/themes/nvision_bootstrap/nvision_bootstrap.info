@@ -44,6 +44,7 @@ scripts[] = 'bootstrap/js/popover.js'
 scripts[] = 'bootstrap/js/scrollspy.js'
 scripts[] = 'bootstrap/js/tab.js'
 scripts[] = 'bootstrap/js/transition.js'
+scripts[] = 'js/min/nvision-min.js'
 
 ; Disable the CDN provider so compiled source files can be used.
 settings[bootstrap_cdn] = ''

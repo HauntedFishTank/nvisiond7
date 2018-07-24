@@ -6836,14 +6836,6 @@ body #admin-menu {
 body #admin-menu .dropdown li {
   line-height: normal;
 }
-body.site-status-message #hero-carousel {
-  padding-top: 30px;
-}
-@media screen and (max-width: 767px) {
-  body.site-status-message #hero-carousel {
-    padding-top: 46px;
-  }
-}
 @media screen and (min-width: 768px) {
   .navbar.container {
     max-width: 720px;
