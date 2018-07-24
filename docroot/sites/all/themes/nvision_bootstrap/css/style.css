@@ -6836,7 +6836,7 @@ body #admin-menu {
 body #admin-menu .dropdown li {
   line-height: normal;
 }
-body.site-status-message.not-front #main-container {
+body.site-status-message.not-front .main-container {
   padding-top: 48px;
 }
 @media screen and (min-width: 768px) {
