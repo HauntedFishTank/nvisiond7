@@ -74,6 +74,10 @@
  */
 ?>
 <header id="navbar" role="banner" class="<?php print $navbar_classes; ?>">
+  <?php if (isset($page['page_top']['site_status_message'])): ?>
+    <?php print render($page['page_top']['site_status_message']); ?>
+    <?php hide($page['page_top']['site_status_message']); ?>
+  <?php endif; ?>
   <div class="<?php print $container_class; ?>">
     <div class="navbar-header">
       <?php if ($logo): ?>
