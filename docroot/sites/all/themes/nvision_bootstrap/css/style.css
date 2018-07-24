@@ -6841,7 +6841,7 @@ body.site-status-message #hero-carousel {
 }
 @media screen and (max-width: 767px) {
   body.site-status-message #hero-carousel {
-    padding-top: 40px;
+    padding-top: 46px;
   }
 }
 @media screen and (min-width: 768px) {
