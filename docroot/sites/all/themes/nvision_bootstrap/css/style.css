@@ -6838,7 +6838,7 @@ body #admin-menu .dropdown li {
 }
 @media screen and (max-width: 767px) {
   body.site-status-message #hero-carousel {
-    padding-top: 30px;
+    padding-top: 40px;
   }
 }
 @media screen and (min-width: 768px) {
